@@ -209,7 +209,6 @@ export default {
           })
           .catch(err => {
             alert(err);
-            // reload this page after clicked 'OK'
             location.reload();
           });
       } else {
@@ -218,7 +217,7 @@ export default {
     },
 
     retrieveData(payload) {
-      this.checkNumRows(payload.parsedBook, payload.parsedBank);
+      this.checkNumRows(payload.parsedBook, payload.parsedBank)
 
       // Prop data (files) -------------
       this.files.book = payload.parsedBook;
