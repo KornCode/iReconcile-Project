@@ -285,6 +285,7 @@
 <script>
 import _ from "lodash";
 import { mapState, mapActions, mapGetters } from "vuex";
+import { MyFunctions } from "@/MyFunctions.js"
 
 ("use strict");
 
@@ -351,8 +352,8 @@ export default {
     let items_bank = this.files.bank;
 
     this.pairs_len = _.values(paired).length;
-    let len1 = [...Array(this.pairs_len).keys()];
-    let len2 = _.values(paired).filter(o => _.isNumber(o));
+    let len1 = MyFunctions.range(0, this.pairs_len - 1);
+    let len2 = _.values(paired).filter(o => o !== null);
     let book_null = _.difference(len1, len2);
 
     // transfer options for Transfer Modal

@@ -18,11 +18,11 @@
             <b-form @submit="onSubmit" @reset="onReset" v-if="show">
               <b-form-group
                 label-cols-lg="3"
-                label="Contact"
                 label-size="lg"
                 label-class="font-weight-bold pt-0"
                 class="mb-0"
               >
+                <div slot="label"><h2>Contacts</h2></div>
                 <b-form-group
                   id="email"
                   label-cols-sm="3"
