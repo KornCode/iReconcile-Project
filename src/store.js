@@ -10,7 +10,7 @@ const debug = process.env.NODE_ENV !== "production";
 // console.log('lodash time', new Date() - timerDateFindLodash);
 
 export default new Vuex.Store({
-  plugins: [createPersistedState({ storage: window.sessionStorage })],
+  // plugins: [createPersistedState({ storage: window.sessionStorage })],
   strict: debug,
   state: {
     files: null,
@@ -63,10 +63,9 @@ export default new Vuex.Store({
       state.items.splice(index, 1);
     },
     UNDO: state => {
+      const sort_index = (a, b) => a.index - b.index;
       state.items.push(state.stack.pop());
-      state.items.sort(function(a, b) {
-        return a.index - b.index;
-      });
+      state.items.sort(sort_index);
     },
     REPLACE_ITEMS: (state, payload) => {
       let newVal = state.items[payload.index];

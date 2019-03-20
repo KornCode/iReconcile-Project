@@ -161,7 +161,7 @@
         enter-active-class="animated zoomIn"
         leave-active-class="animated zoomOut"
       >
-        <div v-for="(item, index) in items" v-bind:key="index">
+        <div v-for="(item, index) in items" v-bind:key="item.index">
           <b-row align-h="center" style="max-height: 200px;" class="mb-4">
             <b-col cols="5">
               <b-card-group deck style="height: 100%">
@@ -374,7 +374,7 @@ export default {
         book: null,
         bank: items_bank[key],
         matched: null,
-        id: key,
+        index: key,
         metas: {
           transfer: items_bank[key].Bank_Entity,
           create: {
