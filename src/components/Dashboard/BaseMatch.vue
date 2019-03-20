@@ -161,7 +161,7 @@
         enter-active-class="animated zoomIn"
         leave-active-class="animated zoomOut"
       >
-        <div v-for="(item, index) in items" :key="item.index">
+        <div v-for="(item, index) in items" v-bind:key="index">
           <b-row align-h="center" style="max-height: 200px;" class="mb-4">
             <b-col cols="5">
               <b-card-group deck style="height: 100%">
@@ -285,7 +285,7 @@
 <script>
 import _ from "lodash";
 import { mapState, mapActions, mapGetters } from "vuex";
-import { MyFunctions } from "@/MyFunctions.js"
+import { MyFunctions } from "@/MyFunctions.js";
 
 ("use strict");
 
@@ -374,7 +374,7 @@ export default {
         book: null,
         bank: items_bank[key],
         matched: null,
-        index: key,
+        id: key,
         metas: {
           transfer: items_bank[key].Bank_Entity,
           create: {

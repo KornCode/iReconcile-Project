@@ -92,7 +92,7 @@ export default {
     },
 
     detect() {
-      alert('hi')
+      alert("hi");
     }
   },
 
@@ -109,8 +109,7 @@ export default {
       let unwrap = ({ book, bank, metas }) => ({ book, bank, metas });
       return this.items_book.map(obj => unwrap(obj));
     }
-  },
-
+  }
 };
 </script>
 
