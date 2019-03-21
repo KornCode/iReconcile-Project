@@ -14,7 +14,7 @@
               >Failed - Try again.</b-alert
             >
           </div>
-          <b-card bg-variant="light">
+          <b-card bg-variant="light" style="border-radius: 20px">
             <b-form @submit="onSubmit" @reset="onReset" v-if="show">
               <b-form-group
                 label-cols-lg="3"

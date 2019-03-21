@@ -43,7 +43,7 @@
 
     <vue-particles
       color="#6F6767"
-      :particleOpacity="0.3"
+      :particleOpacity="0.2"
       class="particles-js"
     ></vue-particles>
 

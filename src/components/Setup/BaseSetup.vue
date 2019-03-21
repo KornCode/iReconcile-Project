@@ -28,6 +28,7 @@
             class="pt-4 pb-4 shadow-sm"
             bg-variant="dark"
             text-variant="light"
+            style="border-radius: 10px"
           >
             <div slot="header" v-text="$ml.get('setupHeader')" />
             <b-button
@@ -282,6 +283,7 @@ import Papa from "papaparse";
 import Chrono from "chrono-node";
 
 import { mapActions } from "vuex";
+import { MyFunctions } from "@/MyFunctions.js";
 
 ("use strict");
 
@@ -345,9 +347,9 @@ export default {
         let obj = {
           Date: parseDate(item[this.fields.book.date]),
           Desc: item[this.fields.book.desc],
-          Debit: parseNumber(item[this.fields.book.debit]),
-          Credit: parseNumber(item[this.fields.book.credit]),
-          Balance: parseNumber(item[this.fields.book.balance])
+          Debit: MyFunctions.parseNumber(item[this.fields.book.debit]),
+          Credit: MyFunctions.parseNumber(item[this.fields.book.credit]),
+          Balance: MyFunctions.parseNumber(item[this.fields.book.balance])
         };
 
         this.parsed_book.push(obj);
@@ -361,10 +363,16 @@ export default {
           let obj = {
             Date: parseDate(item[this.fields.bank.date[index]]),
             Desc: item[this.fields.bank.desc[index]],
-            Deposit: parseNumber(item[this.fields.bank.deposit[index]]),
+            Deposit: MyFunctions.parseNumber(
+              item[this.fields.bank.deposit[index]]
+            ),
             Reference: item[this.fields.bank.ref[index]],
-            Withdraw: parseNumber(item[this.fields.bank.withdraw[index]]),
-            Balance: parseNumber(item[this.fields.bank.balance[index]]),
+            Withdraw: MyFunctions.parseNumber(
+              item[this.fields.bank.withdraw[index]]
+            ),
+            Balance: MyFunctions.parseNumber(
+              item[this.fields.bank.balance[index]]
+            ),
             Bank_Entity: this.fileNames.bank[index]
           };
 
@@ -457,14 +465,6 @@ function parseDate(date_str) {
     .split(" ")
     .slice(1, 4) // DD Month YYYY
     .join(" ");
-}
-
-function parseNumber(number, dtype = "float") {
-  if (number && dtype === "int") {
-    return parseInt(number.replace(",", ""), 10);
-  } else if (number && dtype === "float") {
-    return parseFloat(number.replace(",", ""));
-  }
 }
 </script>
 

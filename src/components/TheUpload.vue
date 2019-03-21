@@ -9,6 +9,9 @@
               border-variant="dark"
               header-border-variant="dark"
               header-tag="header"
+              header-bg-variant="dark"
+              header-text-variant="light"
+              body-bg-variant="light"
             >
               <h3
                 slot="header"
@@ -16,63 +19,65 @@
                 v-text="$ml.get('uploadHeader')"
               ></h3>
 
-              <b-row class="mb-4 justify-content-md-center">
-                <b-col md="10">
-                  <b-form-file
-                    accept=".csv"
-                    v-model="file_book"
-                    :state="Boolean(file_book)"
-                    ref="file_book"
-                    placeholder="Ledger statement..."
-                  />
-                  <b-tooltip
-                    :target="() => $refs.file_book"
-                    placement="rightbottom"
-                    title="Support single file"
-                  />
-                </b-col>
-              </b-row>
-
-              <b-row class="mb-4 justify-content-md-center">
-                <b-col md="10">
-                  <b-form-file
-                    accept=".csv"
-                    v-model="file_bank"
-                    :state="Boolean(file_bank)"
-                    :multiple="Boolean(true)"
-                    ref="file_bank"
-                    placeholder="Bank statements..."
-                  />
-                  <b-tooltip
-                    :target="() => $refs.file_bank"
-                    placement="rightbottom"
-                    title="Support multiple files"
-                  />
-                  <div class="mt-3">
-                    <font-awesome-icon icon="file-csv" />
-                    Bank files: {{ file_bank && file_bank.length }}
-                  </div>
-                </b-col>
-              </b-row>
-
-              <b-row class="mb-2 justify-content-md-center">
-                <b-button-toolbar>
-                  <b-button-group class="mx-1">
-                    <b-button
-                      @click="clearBook"
-                      variant="outline-secondary"
-                      v-text="$ml.get('uploadClearLedger')"
+              <b-card-body>
+                <b-row class="mb-4 justify-content-md-center">
+                  <b-col md="10">
+                    <b-form-file
+                      accept=".csv"
+                      v-model="file_book"
+                      :state="Boolean(file_book)"
+                      ref="file_book"
+                      placeholder="Ledger statement..."
                     />
-                  </b-button-group>
-                  <b-button-group class="mx-1">
-                    <b-button
-                      @click="clearBank"
-                      variant="outline-secondary"
-                      v-text="$ml.get('uploadClearBanks')"
+                    <b-tooltip
+                      :target="() => $refs.file_book"
+                      placement="rightbottom"
+                      title="Support single file"
                     />
-                  </b-button-group>
-                </b-button-toolbar>
-              </b-row>
+                  </b-col>
+                </b-row>
+
+                <b-row class="mb-4 justify-content-md-center">
+                  <b-col md="10">
+                    <b-form-file
+                      accept=".csv"
+                      v-model="file_bank"
+                      :state="Boolean(file_bank)"
+                      :multiple="Boolean(true)"
+                      ref="file_bank"
+                      placeholder="Bank statements..."
+                    />
+                    <b-tooltip
+                      :target="() => $refs.file_bank"
+                      placement="rightbottom"
+                      title="Support multiple files"
+                    />
+                    <div class="mt-3">
+                      <font-awesome-icon icon="file-csv" />
+                      Bank files: {{ file_bank && file_bank.length }}
+                    </div>
+                  </b-col>
+                </b-row>
+
+                <b-row class="mb-2 justify-content-md-center">
+                  <b-button-toolbar>
+                    <b-button-group class="mx-1">
+                      <b-button
+                        @click="clearBook"
+                        variant="outline-secondary"
+                        v-text="$ml.get('uploadClearLedger')"
+                      />
+                    </b-button-group>
+                    <b-button-group class="mx-1">
+                      <b-button
+                        @click="clearBank"
+                        variant="outline-secondary"
+                        v-text="$ml.get('uploadClearBanks')"
+                      />
+                    </b-button-group>
+                  </b-button-toolbar>
+                </b-row>
+              </b-card-body>
 
               <div slot="footer" align="center">
                 <b-button
@@ -110,7 +115,7 @@ import fuzz from "fuzzball";
 import Papa from "papaparse";
 
 import Setup from "@/components/Setup/BaseSetup.vue";
-import { mapActions } from "vuex";
+import { MyFunctions } from "@/MyFunctions.js";
 
 ("use strict");
 
@@ -123,12 +128,25 @@ export default {
 
   data() {
     return {
+      /*****
+       * Form inputs
+       */
       file_book: null,
       file_bank: null,
+
+      /*****
+       * show and hide components
+       */
       show_upload: true,
       show_setupfile: false,
 
-      files: { book: null, bank: null },
+      /*****
+       * Data sending to props
+       */
+      files: {
+        book: null,
+        bank: null
+      },
       fields: {
         book: {
           date: null,
@@ -146,28 +164,18 @@ export default {
           balance: []
         }
       },
-      columns: { book: null, bank: [] },
+      columns: {
+        book: null,
+        bank: []
+      },
       file_names: {
         book: null,
         bank: null
-      },
-
-      list: null
+      }
     };
   },
 
-  created() {
-    this.list = [
-      { index: 1, name: "korn" },
-      { index: 2, name: "pleaw" },
-      { index: 3, name: "gift" },
-      { index: 4, name: "bam" }
-    ];
-  },
-
   methods: {
-    ...mapActions(["addBookAcc", "addBankAcc"]),
-
     submitFiles() {
       if (this.file_book && this.file_bank) {
         let parseBookPromise = file => {
@@ -196,7 +204,7 @@ export default {
         };
 
         let parseAllPromise = async () => {
-          let [err, res] = await handle(
+          let [err, res] = await MyFunctions.handle(
             Promise.all([
               parseBookPromise(this.file_book),
               parseBankPromise(this.file_bank)
@@ -205,6 +213,7 @@ export default {
           if (err || !res) {
             throw new Error("An error parsing document.");
           }
+
           return { parsedBook: res[0], parsedBank: res[1] };
         };
 
@@ -216,11 +225,10 @@ export default {
             this.selectColumnToken();
           })
           .then(() => {
-            this.toggleChildComponent();
+            this.toggleSetupComponent();
           })
           .catch(err => {
             alert(err);
-            // reload this page after clicked 'OK'
             location.reload();
           });
       } else {
@@ -229,6 +237,7 @@ export default {
     },
 
     retrieveData(payload) {
+      // Check if data are accepted
       this.checkNumRows(payload.parsedBook, payload.parsedBank);
 
       // Prop data (files) -------------
@@ -241,9 +250,11 @@ export default {
       this.columns.bank = payload.parsedBank.map(o => Object.keys(o.data[0]));
       // -------------------------------
 
-      // Prop data (columns) -----------
-      this.file_names.book = getAccName(this.file_book);
-      this.file_names.bank = this.file_bank.map(acc => getAccName(acc));
+      // Prop data (file_names) --------
+      this.file_names.book = MyFunctions.getAccName(this.file_book);
+      this.file_names.bank = this.file_bank.map(acc =>
+        MyFunctions.getAccName(acc)
+      );
       // -------------------------------
     },
 
@@ -283,7 +294,7 @@ export default {
       });
     },
 
-    toggleChildComponent() {
+    toggleSetupComponent() {
       this.show_upload = false;
       this.show_setupfile = true;
     },
@@ -296,9 +307,6 @@ export default {
     }
   }
 };
-
-const handle = promise =>
-  promise.then(res => [null, res]).catch(err => [err, null]);
 
 class TokenSetRatio {
   constructor(columns) {
@@ -336,13 +344,6 @@ class TokenSetRatio {
     });
     return result;
   }
-}
-
-function getAccName(account) {
-  return account.name
-    .split(".")
-    .slice(0, -1)
-    .join(".");
 }
 </script>
 

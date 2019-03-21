@@ -180,7 +180,7 @@
                         </p>
                         <p class="description">{{ item.bank.Desc }}</p>
                         <p class="reference font-italic">
-                          {{ item.bank.Reference }}
+                          {{ item.metas.create.what }}
                         </p>
                       </div>
                     </b-col>

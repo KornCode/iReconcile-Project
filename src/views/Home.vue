@@ -2,7 +2,12 @@
   <div class="home">
     <div>
       <div style="display: inline-block;" class="w-75">
-        <b-card no-body class="overflow-hidden mt-5" bg-variant="light">
+        <b-card
+          no-body
+          class="overflow-hidden mt-5"
+          bg-variant="light"
+          style="border-radius: 20px"
+        >
           <b-row no-gutters>
             <b-col md="6">
               <b-card-body>

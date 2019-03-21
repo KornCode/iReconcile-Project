@@ -46,5 +46,35 @@ export const MyFunctions = {
     // using Array.from() with a mapping function.
     // Finally, return the new array.
     return Array.from(Array(length), (x, index) => start + index * step);
+  },
+
+  /**
+   * handle()
+   *
+   * Returns resolve and reject of promise
+   *
+   * @param {promise} promise (Required: promise.)
+   *
+   * @return {array} (An array containing resolved and rejected.)
+   *
+   * @throws {Error} (If input is not a promise.)
+   */
+  handle: function(promise) {
+    return promise.then(res => [null, res]).catch(err => [err, null]);
+  },
+
+  getAccName: function(account) {
+    return account.name
+      .split(".")
+      .slice(0, -1)
+      .join(".");
+  },
+
+  parseNumber: function(number, dtype = "float") {
+    if (number && dtype === "int") {
+      return parseInt(number.replace(",", ""), 10);
+    } else if (number && dtype === "float") {
+      return parseFloat(number.replace(",", ""));
+    }
   }
 };

@@ -23,27 +23,12 @@
                   </b-input-group>
                 </b-form-group>
               </b-col>
-
-              <b-col md="6" class="my-1">
-                <b-form-group>
-                  <!-- <b-form-radio-group
-                    v-model="selected_radioBook"
-                    :options="options_book"
-                    name="radioInline"
-                  > 
-                  </b-form-radio-group> -->
-                </b-form-group>
-                <div class="mt-3">
-                  <!-- Selected: <strong>{{ selected_radioBook }}</strong> -->
-                </div>
-              </b-col>
             </b-row>
-            <!-- :sort-by.sync="sortBy"
-                    :sort-desc.sync="sortDesc" -->
+
             <b-table
               hover
               small
-              :items="stack"
+              :items="list_items"
               :fields="fields"
               :filter="filter_book"
               caption-top
@@ -51,8 +36,12 @@
             >
               <template slot="undo" slot-scope="row">
                 <div class="pt-3">
-                  <b-button variant="danger" size="sm" @click="undo(row.item.index)">
-                    undo {{row.item.index}}
+                  <b-button
+                    variant="danger"
+                    size="sm"
+                    @click="undo(row.item.index)"
+                  >
+                    undo {{ row.item.index }}
                   </b-button>
                 </div>
               </template>
@@ -80,7 +69,15 @@ export default {
       items_bank: [],
       items_book: [],
 
-      fields: ["book", "bank", "metas", "undo"],
+      fields: [
+        "Date",
+        "Payee",
+        "Reference",
+        "Spent",
+        "Received",
+        "Comment",
+        "undo"
+      ],
 
       filter_book: null,
       filter_bank: null
@@ -92,14 +89,13 @@ export default {
 
     generatePDF() {
       let doc = new jsPDF();
+      let body_data = this.list_items.map(obj => Object.values(obj));
 
       doc.autoTable({
-        head: [["Book", "Bank", "Meta"]],
-        body: [
-          ["David", "david@example.com", "Sweden"],
-          ["Castille", "castille@example.com", "Norway"]
-          // ...
-        ]
+        head: [
+          ["No", "Date", "Payee", "Reference", "Spent", "Received", "Comment"]
+        ],
+        body: body_data
       });
 
       doc.save("table.pdf");
@@ -120,12 +116,28 @@ export default {
   },
 
   computed: {
-    ...mapState(["stack"])
+    ...mapState(["stack"]),
+
+    list_items: function() {
+      let temp = [];
+      for (var key in this.stack) {
+        let obj = {
+          index: this.stack[key].index,
+          Date: this.stack[key].bank.Date,
+          Payee: this.stack[key].book.Desc,
+          Reference: this.stack[key].metas.create.what,
+          Spent: this.stack[key].bank.Deposit,
+          Received: this.stack[key].bank.Withdraw,
+          Comment: this.stack[key].metas.comment
+        };
+
+        temp.push(obj);
+      }
+      return temp;
+    }
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-</style>
+<style scoped></style>
