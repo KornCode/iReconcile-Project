@@ -10,7 +10,8 @@
           <b-navbar-nav>
             <div id="nav">
               <b-link class="pr-3" :to="'/'" v-text="$ml.get('navHome')" />
-              <b-link v-if="$store.state.show_nav_dashboard"
+              <b-link
+                v-if="$store.state.show_nav_dashboard"
                 class="pr-3"
                 :to="'/dashboard'"
                 v-text="$ml.get('navDashboard')"

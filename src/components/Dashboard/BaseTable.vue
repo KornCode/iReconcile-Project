@@ -43,11 +43,19 @@
             <b-table
               hover
               small
-              :items="filtered_items_book"
+              :items="stack"
+              :fields="fields"
               :filter="filter_book"
               caption-top
               :responsive="true"
             >
+              <template slot="undo" slot-scope="row">
+                <div class="pt-3">
+                  <b-button variant="danger" size="sm" @click="undo(row.item.index)">
+                    undo {{row.item.index}}
+                  </b-button>
+                </div>
+              </template>
             </b-table>
           </b-tab>
         </b-tabs>
@@ -60,7 +68,7 @@
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 ("use strict");
 
@@ -72,12 +80,16 @@ export default {
       items_bank: [],
       items_book: [],
 
+      fields: ["book", "bank", "metas", "undo"],
+
       filter_book: null,
       filter_bank: null
     };
   },
 
   methods: {
+    ...mapActions(["undo"]),
+
     generatePDF() {
       let doc = new jsPDF();
 
@@ -94,33 +106,26 @@ export default {
     },
 
     detectPageReload() {
-      window.addEventListener('beforeunload', (event) => {
-      // Cancel the event as stated by the standard.
-      event.preventDefault();
-      // Chrome requires returnValue to be set.
-      event.returnValue = '';
-    });
-    },
+      window.addEventListener("beforeunload", event => {
+        // Cancel the event as stated by the standard.
+        event.preventDefault();
+        // Chrome requires returnValue to be set.
+        event.returnValue = "";
+      });
+    }
   },
 
   mounted() {
-    this.detectPageReload();
+    // this.detectPageReload();
   },
 
   computed: {
-    ...mapState([
-      "stack"
-    ]),
-
-    // filter 'book', 'bank', and 'metas' from object
-    filtered_items_book: function() {
-      // destructuring assignment
-      let unwrap = ({ book, bank, metas }) => ({ book, bank, metas });
-      return this.stack.map(obj => unwrap(obj));
-    }
+    ...mapState(["stack"])
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style scoped>
+
+</style>

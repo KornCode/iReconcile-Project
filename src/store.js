@@ -67,10 +67,20 @@ export default new Vuex.Store({
       state.stack.push(state.items[index]);
       state.items.splice(index, 1);
     },
-    UNDO: state => {
-      const sort_index = (a, b) => a.index - b.index;
-      state.items.push(state.stack.pop());
-      state.items.sort(sort_index);
+    UNDO: (state, index) => {
+      const _sort_index = (a, b) => a.index - b.index;
+      const _index_ObjInArray = (array, index) => {
+        let _select_obj = array.find(obj => obj.index === index);
+        return array.indexOf(_select_obj);
+      }
+      // let select_obj = state.stack.find(obj => obj.index === index);
+      // let indexToRemove = state.stack.indexOf(select_obj);
+
+      let select_obj = _index_ObjInArray(state.stack, index);
+      
+      state.items.push(state.stack[select_obj]);
+      state.stack.splice(state.stack[select_obj], 1);
+      state.items.sort(_sort_index);
     },
     REPLACE_ITEMS: (state, payload) => {
       let newVal = state.items[payload.index];
@@ -122,8 +132,8 @@ export default new Vuex.Store({
     del: (context, index) => {
       context.commit("DEL", index);
     },
-    undo: context => {
-      context.commit("UNDO");
+    undo: (context, index) => {
+      context.commit("UNDO", index);
     },
     replaceItems: (context, payload) => {
       context.commit("REPLACE_ITEMS", payload);

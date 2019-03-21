@@ -124,19 +124,10 @@
             </b-row>
           </b-col>
           <b-col cols="1" align-self="center">
-            <b-row align-h="center">
-              <b-button
-                v-if="countStacks > 0"
-                @click="undo()"
-                variant="outline-info"
-              >
-                <font-awesome-icon icon="undo" />
-              </b-button>
-            </b-row>
             <b-row align-h="center" class="mt-2">
-              <span class="badge badge-primary"
-                >{{ countStacks }} of {{ pairs_len }}</span
-              >
+              <b-badge variant="warning" pill>
+                {{ countStacks }} of {{ pairs_len }}
+              </b-badge>
             </b-row>
           </b-col>
           <b-col cols="5">
@@ -184,20 +175,24 @@
                   <b-row>
                     <b-col cols="6">
                       <div class="text-left">
-                        <p class="date font-weight-bold">{{ item.bank.Date }}</p>
+                        <p class="date font-weight-bold">
+                          {{ item.bank.Date }}
+                        </p>
                         <p class="description">{{ item.bank.Desc }}</p>
-                        <p class="reference font-italic">{{ item.bank.Reference }}</p>
+                        <p class="reference font-italic">
+                          {{ item.bank.Reference }}
+                        </p>
                       </div>
                     </b-col>
                     <div class="vr" />
-                    
+
                     <b-col>
                       <div class="top-right font-weight-bold">
                         <p class="spent">
                           {{ item.bank.Withdraw | numFormatting }}
                         </p>
                       </div>
-                      </b-col>
+                    </b-col>
                     <div class="vr" />
                     <b-col>
                       <div class="top-right font-weight-bold">
@@ -259,7 +254,9 @@
                   <b-row>
                     <b-col sm="6">
                       <div class="text-left">
-                        <p class="date font-weight-bold">{{ item.book.Date }}</p>
+                        <p class="date font-weight-bold">
+                          {{ item.book.Date }}
+                        </p>
                         <p class="description">{{ item.book.Desc }}</p>
                       </div>
                     </b-col>
@@ -339,7 +336,7 @@ export default {
       // ---------------------
 
       pairs_len: 0,
-      ref_options: [],
+      ref_options: []
     };
   },
 
@@ -383,7 +380,7 @@ export default {
         book: null,
         bank: items_bank[key],
         matched: null,
-        index: key,
+        index: parseInt(key, 10),
         metas: {
           transfer: items_bank[key].Bank_Entity,
           create: {
@@ -559,5 +556,7 @@ export default {
   text-align: right;
 }
 
-p { margin:0 }
+p {
+  margin: 0;
+}
 </style>

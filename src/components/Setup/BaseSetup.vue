@@ -329,7 +329,13 @@ export default {
   },
 
   methods: {
-    ...mapActions(["showNavDashboard", "addFiles", "addPairs", "addBookAcc", "addBankAcc"]),
+    ...mapActions([
+      "showNavDashboard",
+      "addFiles",
+      "addPairs",
+      "addBookAcc",
+      "addBankAcc"
+    ]),
 
     submitSetup() {
       /*************************
