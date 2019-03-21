@@ -65,21 +65,20 @@ export default new Vuex.Store({
     },
     DEL: (state, index) => {
       state.stack.push(state.items[index]);
-      state.items.splice(index, 1);
+      Vue.delete(state.items, index);
+      // state.items.splice(index, 1);
     },
     UNDO: (state, index) => {
       const _sort_index = (a, b) => a.index - b.index;
       const _index_ObjInArray = (array, index) => {
         let _select_obj = array.find(obj => obj.index === index);
         return array.indexOf(_select_obj);
-      }
-      // let select_obj = state.stack.find(obj => obj.index === index);
-      // let indexToRemove = state.stack.indexOf(select_obj);
+      };
 
       let select_obj = _index_ObjInArray(state.stack, index);
-      
+
       state.items.push(state.stack[select_obj]);
-      state.stack.splice(state.stack[select_obj], 1);
+      Vue.delete(state.stack, select_obj);
       state.items.sort(_sort_index);
     },
     REPLACE_ITEMS: (state, payload) => {
