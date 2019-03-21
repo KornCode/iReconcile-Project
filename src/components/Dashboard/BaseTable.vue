@@ -60,6 +60,8 @@
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
+import { mapState } from "vuex";
+
 ("use strict");
 
 export default {
@@ -91,23 +93,30 @@ export default {
       doc.save("table.pdf");
     },
 
-    detect() {
-      alert("hi");
-    }
+    detectPageReload() {
+      window.addEventListener('beforeunload', (event) => {
+      // Cancel the event as stated by the standard.
+      event.preventDefault();
+      // Chrome requires returnValue to be set.
+      event.returnValue = '';
+    });
+    },
   },
 
   mounted() {
-    this.items_book = this.$store.state.stack;
+    this.detectPageReload();
   },
 
   computed: {
+    ...mapState([
+      "stack"
+    ]),
+
     // filter 'book', 'bank', and 'metas' from object
     filtered_items_book: function() {
       // destructuring assignment
-      // https://stackoverflow.com/questions/17781472/how-to-get-a-subset-of-a-javascript-objects-properties
-      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
       let unwrap = ({ book, bank, metas }) => ({ book, bank, metas });
-      return this.items_book.map(obj => unwrap(obj));
+      return this.stack.map(obj => unwrap(obj));
     }
   }
 };

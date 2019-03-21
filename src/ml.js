@@ -12,6 +12,7 @@ export default new MLCreate({
        * App Navbar
        */
       navHome: "Home",
+      navDashboard: "Dashboard",
       navAbout: "About",
       navContact: "Contact",
 
@@ -107,6 +108,7 @@ export default new MLCreate({
        * App Navbar
        */
       navHome: "หน้าแรก",
+      navDashboard: "แดชบอร์ด",
       navAbout: "เกี่ยวกับ",
       navContact: "ติดต่อ",
 

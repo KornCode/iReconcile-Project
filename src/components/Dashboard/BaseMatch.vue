@@ -161,7 +161,7 @@
         enter-active-class="animated zoomIn"
         leave-active-class="animated zoomOut"
       >
-        <div v-for="(item, index) in items" v-bind:key="item.index">
+        <div v-for="(item, index) in items" :key="item.index">
           <b-row align-h="center" style="max-height: 200px;" class="mb-4">
             <b-col cols="5">
               <b-card-group deck style="height: 100%">
@@ -182,25 +182,30 @@
                     }}</b-badge>
                   </div>
                   <b-row>
-                    <b-col
-                      ><p class="date">{{ item.bank.Date }}</p></b-col
-                    >
+                    <b-col cols="6">
+                      <div class="text-left">
+                        <p class="date font-weight-bold">{{ item.bank.Date }}</p>
+                        <p class="description">{{ item.bank.Desc }}</p>
+                        <p class="reference font-italic">{{ item.bank.Reference }}</p>
+                      </div>
+                    </b-col>
                     <div class="vr" />
-                    <b-col
-                      ><p class="description">{{ item.bank.Desc }}</p></b-col
-                    >
+                    
+                    <b-col>
+                      <div class="top-right font-weight-bold">
+                        <p class="spent">
+                          {{ item.bank.Withdraw | numFormatting }}
+                        </p>
+                      </div>
+                      </b-col>
                     <div class="vr" />
-                    <b-col
-                      ><p class="spent">
-                        {{ item.bank.Withdraw | numFormatting }}
-                      </p></b-col
-                    >
-                    <div class="vr" />
-                    <b-col
-                      ><p class="received">
-                        {{ item.bank.Deposit | numFormatting }}
-                      </p></b-col
-                    >
+                    <b-col>
+                      <div class="top-right font-weight-bold">
+                        <p class="received">
+                          {{ item.bank.Deposit | numFormatting }}
+                        </p>
+                      </div>
+                    </b-col>
                   </b-row>
                 </b-card>
               </b-card-group>
@@ -252,25 +257,28 @@
                     <b-badge variant="info">{{ book_account }}</b-badge>
                   </div>
                   <b-row>
-                    <b-col
-                      ><p class="date">{{ item.book.Date }}</p></b-col
-                    >
+                    <b-col sm="6">
+                      <div class="text-left">
+                        <p class="date font-weight-bold">{{ item.book.Date }}</p>
+                        <p class="description">{{ item.book.Desc }}</p>
+                      </div>
+                    </b-col>
                     <div class="vr" />
-                    <b-col
-                      ><p class="description">{{ item.book.Desc }}</p></b-col
-                    >
+                    <b-col>
+                      <div class="top-right font-weight-bold">
+                        <p class="spent">
+                          {{ item.book.Credit | numFormatting }}
+                        </p>
+                      </div>
+                    </b-col>
                     <div class="vr" />
-                    <b-col
-                      ><p class="spent">
-                        {{ item.book.Credit | numFormatting }}
-                      </p></b-col
-                    >
-                    <div class="vr" />
-                    <b-col
-                      ><p class="received">
-                        {{ item.book.Debit | numFormatting }}
-                      </p></b-col
-                    >
+                    <b-col>
+                      <div class="top-right font-weight-bold">
+                        <p class="received">
+                          {{ item.book.Debit | numFormatting }}
+                        </p>
+                      </div>
+                    </b-col>
                   </b-row>
                 </b-card>
               </b-card-group>
@@ -283,6 +291,7 @@
 </template>
 
 <script>
+// check
 import _ from "lodash";
 import { mapState, mapActions, mapGetters } from "vuex";
 import { MyFunctions } from "@/MyFunctions.js";
@@ -330,7 +339,7 @@ export default {
       // ---------------------
 
       pairs_len: 0,
-      ref_options: []
+      ref_options: [],
     };
   },
 
@@ -521,10 +530,13 @@ export default {
 }
 
 .date {
-  font-size: 18px;
+  font-size: 16px;
 }
 .description {
-  font-size: 12px;
+  font-size: 15px;
+}
+.reference {
+  font-size: 15px;
 }
 .spent {
   font-size: 20px;
@@ -532,4 +544,20 @@ export default {
 .received {
   font-size: 20px;
 }
+
+.top-right {
+  /* margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%); */
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding-right: 10%;
+  text-align: right;
+}
+
+p { margin:0 }
 </style>

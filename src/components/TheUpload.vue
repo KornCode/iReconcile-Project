@@ -150,8 +150,19 @@ export default {
       file_names: {
         book: null,
         bank: null
-      }
+      },
+
+      list: null
     };
+  },
+
+  created() {
+    this.list = [
+      {'index': 1, 'name': 'korn'},
+      {'index': 2, 'name': 'pleaw'},
+      {'index': 3, 'name': 'gift'},
+      {'index': 4, 'name': 'bam'}
+    ]
   },
 
   methods: {

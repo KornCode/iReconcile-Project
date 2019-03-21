@@ -329,7 +329,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(["addFiles", "addPairs", "addBookAcc", "addBankAcc"]),
+    ...mapActions(["showNavDashboard", "addFiles", "addPairs", "addBookAcc", "addBankAcc"]),
 
     submitSetup() {
       /*************************
@@ -407,6 +407,7 @@ export default {
         .then(obj => {
           let matched = JSON.parse(obj.data);
           this.addPairs(matched);
+          this.showNavDashboard(true);
           this.$router.push({ name: "dashboard" });
         })
         .catch(err => {

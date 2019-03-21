@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import createPersistedState from "vuex-persistedstate";
+// import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
@@ -21,7 +21,9 @@ export default new Vuex.Store({
 
     stack: [],
     bank_ref: null,
-    items: []
+    items: [],
+
+    show_nav_dashboard: false
   },
   getters: {
     countStacks: state => {
@@ -40,6 +42,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    SHOW_NAV_DASHBOARD: (state, cond) => {
+      state.show_nav_dashboard = cond;
+    },
     ADD_FILES: (state, file) => {
       state.files = file;
     },
@@ -93,6 +98,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    showNavDashboard: (context, cond) => {
+      context.commit("SHOW_NAV_DASHBOARD", cond);
+    },
     addFiles: (context, file) => {
       context.commit("ADD_FILES", file);
     },
