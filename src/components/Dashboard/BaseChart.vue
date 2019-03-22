@@ -12,8 +12,8 @@
               split
               split-variant="outline-primary"
               variant="primary"
-              text="Dropdown with divider"
             >
+              <div slot="text">{{ select_bank }}</div>
               <b-dropdown-header>Dropdown header</b-dropdown-header>
               <div v-for="(bank, index) in banks_index" :key="index">
                 <b-dropdown-item-button @click="selectChart(bank)">{{
@@ -50,6 +50,8 @@ export default {
     return {
       datacollection: null,
 
+      select_bank: '',
+
       banks_index: [],
       partitioned_bank: [],
       options: {
@@ -59,7 +61,7 @@ export default {
               ticks: {
                 // Include a dollar sign in the ticks
                 callback: function(value, values) {
-                  return "฿ " + values;
+                  return "฿ " + value;
                 }
               }
             }
@@ -80,7 +82,9 @@ export default {
         //     }
         //   }
         // }
-      }
+      },
+
+      datacollections: {}
     };
   },
 
@@ -89,43 +93,51 @@ export default {
   },
 
   created() {
-    this.bank_accounts.forEach(each => {
-      this.banks_index.push(each);
-    });
-  },
 
-  methods: {
-    selectChart(index) {
-      var selected_bank = this.files.bank.filter(o => {
-        return o.Bank_Entity === index;
+    for (var i = 0, len = this.bank_accounts.length; i < len; i++) {
+      let each_bank = this.bank_accounts[i];
+
+      this.banks_index.push(each_bank);
+
+      let date_label = [];
+      let balance = [];
+      let selected_bank = this.files.bank.filter(o => {
+        return o.Bank_Entity === each_bank;
       });
-
-      var date_label = [];
-      var balance = [];
 
       selected_bank.forEach(obj => {
         date_label.push(obj.Date);
         balance.push(obj.Balance);
       });
 
-      var dataset = {
-        label: index,
+      let dataset = {
+        label: each_bank,
         fill: false,
-        borderColor: "#0073b7",
+        borderColor: "#179513",
         data: balance
       };
 
-      this.datacollection = {
+      let collection = {
         labels: date_label,
         fill: false,
         datasets: [dataset]
-      };
+      }
+
+      this.datacollections[each_bank] = collection;
     }
+
+    // Initiate chart of first render
+    this.$nextTick(() => {
+      this.selectChart(this.banks_index[0]);
+    });
   },
 
-  mounted() {
-    this.selectChart();
-  }
+  methods: {
+    selectChart(index) {
+      this.select_bank = index;
+      this.datacollection = this.datacollections[index]; 
+    }
+  },
 };
 </script>
 
