@@ -35,6 +35,8 @@ Vue.prototype.$http = axios;
 
 Vue.config.productionTip = false;
 
+("use strict");
+
 new Vue({
   router,
   store,

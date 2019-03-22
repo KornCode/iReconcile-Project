@@ -285,8 +285,6 @@ import Chrono from "chrono-node";
 import { mapActions } from "vuex";
 import { MyFunctions } from "@/MyFunctions.js";
 
-("use strict");
-
 export default {
   name: "Setup",
 

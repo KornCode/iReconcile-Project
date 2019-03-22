@@ -49,8 +49,6 @@
 <script>
 import { mapGetters } from "vuex";
 
-("use strict");
-
 export default {
   name: "Summary",
 

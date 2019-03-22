@@ -117,8 +117,6 @@ import Papa from "papaparse";
 import Setup from "@/components/Setup/BaseSetup.vue";
 import { MyFunctions } from "@/MyFunctions.js";
 
-("use strict");
-
 export default {
   name: "Upload",
 
@@ -273,25 +271,23 @@ export default {
 
     selectColumnToken() {
       let token_book = new TokenSetRatio(this.columns.book);
-      // Prop data (fields.book) --------------------------
       this.fields.book.date = token_book.selectDate;
       this.fields.book.desc = token_book.selectDesc;
       this.fields.book.debit = token_book.selectDebit;
       this.fields.book.credit = token_book.selectCredit;
       this.fields.book.balance = token_book.selectBalance;
-      // --------------------------------------------------
 
-      this.columns.bank.forEach(each_bank => {
+      for (var i = 0, len = this.columns.bank.length; i < len; i++) {
+        let each_bank = this.columns.bank[i];
+
         let token_bank = new TokenSetRatio(each_bank);
-        // Prop data (fields.bank) --------------------------
         this.fields.bank.date.push(token_bank.selectDate);
         this.fields.bank.desc.push(token_bank.selectDesc);
         this.fields.bank.ref.push(token_bank.selectReference);
         this.fields.bank.deposit.push(token_bank.selectDeposit);
         this.fields.bank.withdraw.push(token_bank.selectWithdraw);
         this.fields.bank.balance.push(token_bank.selectBalance);
-        // --------------------------------------------------
-      });
+      }
     },
 
     toggleSetupComponent() {

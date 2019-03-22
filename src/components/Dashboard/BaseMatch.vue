@@ -288,12 +288,9 @@
 </template>
 
 <script>
-// check
 import _ from "lodash";
 import { mapState, mapActions, mapGetters } from "vuex";
 import { MyFunctions } from "@/MyFunctions.js";
-
-("use strict");
 
 export default {
   name: "Match",

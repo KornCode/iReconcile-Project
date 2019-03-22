@@ -59,8 +59,6 @@ import "jspdf-autotable";
 
 import { mapState, mapActions } from "vuex";
 
-("use strict");
-
 export default {
   name: "Table",
 

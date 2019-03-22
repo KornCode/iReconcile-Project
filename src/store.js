@@ -5,6 +5,12 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 const debug = process.env.NODE_ENV !== "production";
+const add = (a, b) => a + b;
+const sort_index = (a, b) => a.index - b.index;
+const index_ObjInArray = (array, index) => {
+  let _select_obj = array.find(obj => obj.index === index);
+  return array.indexOf(_select_obj);
+};
 
 // const timerDateFindLodash = new Date();
 // console.log('lodash time', new Date() - timerDateFindLodash);
@@ -30,11 +36,9 @@ export default new Vuex.Store({
       return state.stack.length;
     },
     bookBalance: state => {
-      const add = (a, b) => a + b;
       return state.files.book.map(bal => bal["Balance"]).reduce(add);
     },
     bankBalance: state => {
-      const add = (a, b) => a + b;
       return state.files.bank
         .flat()
         .map(bal => bal["Balance"])
@@ -66,20 +70,12 @@ export default new Vuex.Store({
     DEL: (state, index) => {
       state.stack.push(state.items[index]);
       Vue.delete(state.items, index);
-      // state.items.splice(index, 1);
     },
     UNDO: (state, index) => {
-      const _sort_index = (a, b) => a.index - b.index;
-      const _index_ObjInArray = (array, index) => {
-        let _select_obj = array.find(obj => obj.index === index);
-        return array.indexOf(_select_obj);
-      };
-
-      let select_obj = _index_ObjInArray(state.stack, index);
-
+      let select_obj = index_ObjInArray(state.stack, index);
       state.items.push(state.stack[select_obj]);
       Vue.delete(state.stack, select_obj);
-      state.items.sort(_sort_index);
+      state.items.sort(sort_index);
     },
     REPLACE_ITEMS: (state, payload) => {
       let newVal = state.items[payload.index];
