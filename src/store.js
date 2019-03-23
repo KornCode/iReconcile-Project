@@ -22,7 +22,7 @@ export default new Vuex.Store({
     files: null,
     paired: null,
     matched: [],
-    book_account: null,
+    book_account: [],
     bank_accounts: [],
 
     stack: [],
@@ -35,14 +35,21 @@ export default new Vuex.Store({
     countStacks: state => {
       return state.stack.length;
     },
+    pairedLength: state => {
+      return state.paired ? Object.values(state.paired).length : 0;
+    },
     bookBalance: state => {
-      return state.files.book.map(bal => bal["Balance"]).reduce(add);
+      return state.files
+        ? state.files.book.map(bal => bal["Balance"]).reduce(add)
+        : 0;
     },
     bankBalance: state => {
-      return state.files.bank
-        .flat()
-        .map(bal => bal["Balance"])
-        .reduce(add);
+      return state.files
+        ? state.files.bank
+            .flat()
+            .map(bal => bal["Balance"])
+            .reduce(add)
+        : 0;
     }
   },
   mutations: {

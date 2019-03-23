@@ -1,7 +1,7 @@
 <template>
   <div class="chart">
     <b-card-group deck>
-      <b-card header=" " header-tag="header">
+      <b-card header=" " header-tag="header" class="overflow-hidden" style="border-radius: 30px">
         <div slot="header" class="float-left">
           <h2>Chart</h2>
         </div>
@@ -14,7 +14,7 @@
               variant="primary"
             >
               <div slot="text">{{ select_bank }}</div>
-              <b-dropdown-header>Dropdown header</b-dropdown-header>
+              <b-dropdown-header>Bank Accounts</b-dropdown-header>
               <div v-for="(bank, index) in banks_index" :key="index">
                 <b-dropdown-item-button @click="selectChart(bank)">{{
                   bank
@@ -50,7 +50,7 @@ export default {
     return {
       datacollection: null,
 
-      select_bank: '',
+      select_bank: "",
 
       banks_index: [],
       partitioned_bank: [],
@@ -59,8 +59,7 @@ export default {
           yAxes: [
             {
               ticks: {
-                // Include a dollar sign in the ticks
-                callback: function(value, values) {
+                callback: function(value) {
                   return "฿ " + value;
                 }
               }
@@ -72,16 +71,6 @@ export default {
             tension: 0
           }
         }
-        // legend: {
-        //   display: false
-        // },
-        // tooltips: {
-        //   callbacks: {
-        //     label: function(tooltipItem) {
-        //       return tooltipItem.yLabel;
-        //     }
-        //   }
-        // }
       },
 
       datacollections: {}
@@ -93,17 +82,17 @@ export default {
   },
 
   created() {
-
     for (var i = 0, len = this.bank_accounts.length; i < len; i++) {
       let each_bank = this.bank_accounts[i];
 
       this.banks_index.push(each_bank);
 
-      let date_label = [];
-      let balance = [];
       let selected_bank = this.files.bank.filter(o => {
         return o.Bank_Entity === each_bank;
       });
+
+      let date_label = [];
+      let balance = [];
 
       selected_bank.forEach(obj => {
         date_label.push(obj.Date);
@@ -121,7 +110,7 @@ export default {
         labels: date_label,
         fill: false,
         datasets: [dataset]
-      }
+      };
 
       this.datacollections[each_bank] = collection;
     }
@@ -135,9 +124,9 @@ export default {
   methods: {
     selectChart(index) {
       this.select_bank = index;
-      this.datacollection = this.datacollections[index]; 
+      this.datacollection = this.datacollections[index];
     }
-  },
+  }
 };
 </script>
 

@@ -61,20 +61,5 @@ export const MyFunctions = {
    */
   handle: function(promise) {
     return promise.then(res => [null, res]).catch(err => [err, null]);
-  },
-
-  getAccName: function(account) {
-    return account.name
-      .split(".")
-      .slice(0, -1)
-      .join(".");
-  },
-
-  parseNumber: function(number, dtype = "float") {
-    if (number && dtype === "int") {
-      return parseInt(number.replace(",", ""), 10);
-    } else if (number && dtype === "float") {
-      return parseFloat(number.replace(",", ""));
-    }
   }
 };

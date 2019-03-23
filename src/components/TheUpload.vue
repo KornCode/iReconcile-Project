@@ -1,17 +1,20 @@
 <template>
-  <div class="upload page">
-    <div id="align_center" class="w-50">
-      <transition leave-active-class="animated bounceOutDown">
+  <div class="upload">
+    <div id="align_center" class="w-50 center-xy">
+      <transition
+        leave-active-class="animated rollOut"
+      >
         <div v-show="show_upload">
           <b-card-group deck>
             <b-card
-              class="shadow-sm"
+              class="overflow-hidden shadow-sm"
               border-variant="dark"
               header-border-variant="dark"
               header-tag="header"
               header-bg-variant="dark"
               header-text-variant="light"
               body-bg-variant="light"
+              style="border-radius: 30px;"
             >
               <h3
                 slot="header"
@@ -85,6 +88,7 @@
                   variant="success"
                   class="btn-lg btn-block"
                   v-text="$ml.get('uploadReview')"
+                  style="border-radius: 30px;"
                 />
               </div>
             </b-card>
@@ -96,8 +100,7 @@
     </div>
 
     <transition
-      enter-active-class="animated slideInUp delay-1s"
-      leave-active-class="animated zoomOut"
+      enter-active-class="animated rollIn delay-1s"
     >
       <Setup
         v-if="show_setupfile"
@@ -249,10 +252,8 @@ export default {
       // -------------------------------
 
       // Prop data (file_names) --------
-      this.file_names.book = MyFunctions.getAccName(this.file_book);
-      this.file_names.bank = this.file_bank.map(acc =>
-        MyFunctions.getAccName(acc)
-      );
+      this.file_names.book = getAccName(this.file_book);
+      this.file_names.bank = this.file_bank.map(acc => getAccName(acc));
       // -------------------------------
     },
 
@@ -271,6 +272,7 @@ export default {
 
     selectColumnToken() {
       let token_book = new TokenSetRatio(this.columns.book);
+
       this.fields.book.date = token_book.selectDate;
       this.fields.book.desc = token_book.selectDesc;
       this.fields.book.debit = token_book.selectDebit;
@@ -278,9 +280,7 @@ export default {
       this.fields.book.balance = token_book.selectBalance;
 
       for (var i = 0, len = this.columns.bank.length; i < len; i++) {
-        let each_bank = this.columns.bank[i];
-
-        let token_bank = new TokenSetRatio(each_bank);
+        let token_bank = new TokenSetRatio(this.columns.bank[i]);
         this.fields.bank.date.push(token_bank.selectDate);
         this.fields.bank.desc.push(token_bank.selectDesc);
         this.fields.bank.ref.push(token_bank.selectReference);
@@ -341,11 +341,27 @@ class TokenSetRatio {
     return result;
   }
 }
+
+function getAccName(account) {
+  return account.name
+    .split(".")
+    .slice(0, -1)
+    .join(".");
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #align_center {
   margin: 0 auto;
+}
+
+.center-xy {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 </style>

@@ -126,7 +126,7 @@
           <b-col cols="1" align-self="center">
             <b-row align-h="center" class="mt-2">
               <b-badge variant="warning" pill>
-                {{ countStacks }} of {{ pairs_len }}
+                {{ countStacks }} of {{ pairedLength }}
               </b-badge>
             </b-row>
           </b-col>
@@ -148,10 +148,7 @@
           </b-col>
         </b-row>
       </div>
-      <transition-group
-        enter-active-class="animated zoomIn"
-        leave-active-class="animated zoomOut"
-      >
+      <transition-group leave-active-class="animated flipOutX">
         <div v-for="(item, index) in items" :key="item.index">
           <b-row align-h="center" style="max-height: 200px;" class="mb-4">
             <b-col cols="5">
@@ -290,7 +287,6 @@
 <script>
 import _ from "lodash";
 import { mapState, mapActions, mapGetters } from "vuex";
-import { MyFunctions } from "@/MyFunctions.js";
 
 export default {
   name: "Match",
@@ -332,7 +328,6 @@ export default {
       commentStore: {},
       // ---------------------
 
-      pairs_len: 0,
       ref_options: []
     };
   },
@@ -346,7 +341,7 @@ export default {
       "bank_ref",
       "items"
     ]),
-    ...mapGetters(["countStacks"])
+    ...mapGetters(["countStacks", "pairedLength"])
   },
 
   created() {
@@ -354,23 +349,16 @@ export default {
     let items_book = this.files.book;
     let items_bank = this.files.bank;
 
-    this.pairs_len = _.values(paired).length;
-    let len1 = MyFunctions.range(0, this.pairs_len - 1);
-    let len2 = _.values(paired).filter(o => o !== null);
-    let book_null = _.difference(len1, len2);
-
     // transfer options for Transfer Modal
-    this.bank_accounts.forEach(acc => {
-      this.transfer_options.push({ value: acc, text: acc });
-    });
+    this.getTransferOptions();
 
     // ref options for create.who of Create Modal
-    let bankRefAll = items_bank.map(obj => obj.Reference);
-    let bankRefDistinct = [...new Set(bankRefAll)];
-    bankRefDistinct.forEach(ref => {
-      this.ref_options.push({ value: ref, text: ref });
-    });
+    this.getRefOptions(items_bank);
 
+    // {Array} index of null
+    let book_null = index_of_null(paired);
+
+    // iteration of object paired
     for (var key in paired) {
       var value = paired[key];
       let obj = {
@@ -401,6 +389,20 @@ export default {
 
   methods: {
     ...mapActions(["undo", "del", "replaceItems"]),
+
+    getTransferOptions() {
+      this.bank_accounts.forEach(acc => {
+        this.transfer_options.push({ value: acc, text: acc });
+      });
+    },
+
+    getRefOptions(items_bank) {
+      let bankRefAll = items_bank.map(obj => obj.Reference);
+      let bankRefDistinct = [...new Set(bankRefAll)];
+      bankRefDistinct.forEach(ref => {
+        this.ref_options.push({ value: ref, text: ref });
+      });
+    },
 
     openModal(item) {
       this.modalItem = item;
@@ -515,6 +517,17 @@ export default {
     }
   }
 };
+
+function index_of_null(paired) {
+  let value = Object.values(paired);
+  let missing = [];
+  for (var i = 0, len = value.length; i < len; i++) {
+    if (value.indexOf(i) == -1) {
+      missing.push(i);
+    }
+  }
+  return missing;
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

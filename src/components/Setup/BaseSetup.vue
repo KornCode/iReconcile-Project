@@ -22,7 +22,7 @@
     </div>
 
     <div style="display: inline-block;" class="w-75">
-      <transition leave-active-class="animated zoomOut">
+      <transition leave-active-class="animated slideOutDown">
         <div v-show="show_setup">
           <b-jumbotron
             class="pt-4 pb-4 shadow-sm"
@@ -35,6 +35,7 @@
               variant="primary"
               class="w-25 mt-2"
               @click="submitSetup()"
+              style="border-radius: 30px"
               v-text="$ml.get('setupParseButton')"
             />
             <div v-show="show_progress">
@@ -283,7 +284,6 @@ import Papa from "papaparse";
 import Chrono from "chrono-node";
 
 import { mapActions } from "vuex";
-import { MyFunctions } from "@/MyFunctions.js";
 
 export default {
   name: "Setup",
@@ -345,9 +345,9 @@ export default {
         let obj = {
           Date: parseDate(item[this.fields.book.date]),
           Desc: item[this.fields.book.desc],
-          Debit: MyFunctions.parseNumber(item[this.fields.book.debit]),
-          Credit: MyFunctions.parseNumber(item[this.fields.book.credit]),
-          Balance: MyFunctions.parseNumber(item[this.fields.book.balance])
+          Debit: parseNumber(item[this.fields.book.debit]),
+          Credit: parseNumber(item[this.fields.book.credit]),
+          Balance: parseNumber(item[this.fields.book.balance])
         };
 
         this.parsed_book.push(obj);
@@ -361,16 +361,10 @@ export default {
           let obj = {
             Date: parseDate(item[this.fields.bank.date[index]]),
             Desc: item[this.fields.bank.desc[index]],
-            Deposit: MyFunctions.parseNumber(
-              item[this.fields.bank.deposit[index]]
-            ),
+            Deposit: parseNumber(item[this.fields.bank.deposit[index]]),
             Reference: item[this.fields.bank.ref[index]],
-            Withdraw: MyFunctions.parseNumber(
-              item[this.fields.bank.withdraw[index]]
-            ),
-            Balance: MyFunctions.parseNumber(
-              item[this.fields.bank.balance[index]]
-            ),
+            Withdraw: parseNumber(item[this.fields.bank.withdraw[index]]),
+            Balance: parseNumber(item[this.fields.bank.balance[index]]),
             Bank_Entity: this.fileNames.bank[index]
           };
 
@@ -456,6 +450,14 @@ export default {
     }
   }
 };
+
+function parseNumber(number, dtype = "float") {
+  if (number && dtype === "int") {
+    return parseInt(number.replace(",", ""), 10);
+  } else if (number && dtype === "float") {
+    return parseFloat(number.replace(",", ""));
+  }
+}
 
 function parseDate(date_str) {
   var date = Chrono.parseDate(date_str).toString();

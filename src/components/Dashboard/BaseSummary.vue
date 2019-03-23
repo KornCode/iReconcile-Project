@@ -1,11 +1,12 @@
 <template>
   <div class="summary">
-    <b-list-group>
+    <b-list-group class="overflow-hidden">
       <b-list-group-item
         class="d-flex justify-content-between align-items-center"
+        style="border-radius: 20px 20px 0px 0px"
       >
-        <div v-text="$ml.get('summaryChart')" />
-        <b-badge variant="primary" pill>28</b-badge>
+        <div v-text="$ml.get('summaryTotal')" />
+        <b-badge variant="primary" pill>{{ pairedLength }}</b-badge>
       </b-list-group-item>
 
       <b-list-group-item
@@ -17,17 +18,21 @@
 
       <b-list-group-item
         class="d-flex justify-content-between align-items-center"
+        style="border-radius: 0px 0px 20px 20px"
       >
         <div v-text="$ml.get('summaryRemaining')" />
-        <b-badge variant="warning" pill>{{ 28 - countStacks }}</b-badge>
+        <b-badge variant="warning" pill>{{
+          pairedLength - countStacks
+        }}</b-badge>
       </b-list-group-item>
     </b-list-group>
 
     <div class="py-2"></div>
 
-    <b-list-group>
+    <b-list-group class="overflow-hidden">
       <b-list-group-item
         class="d-flex justify-content-between align-items-center"
+        style="border-radius: 20px 20px 0px 0px"
       >
         <div v-text="$ml.get('summaryBookBalance')" />
         <b-badge variant="warning" pill>{{
@@ -36,6 +41,7 @@
       </b-list-group-item>
       <b-list-group-item
         class="d-flex justify-content-between align-items-center"
+        style="border-radius: 0px 0px 20px 20px"
       >
         <div v-text="$ml.get('summaryBankBalance')" />
         <b-badge variant="warning" pill>{{
@@ -57,7 +63,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["countStacks", "bookBalance", "bankBalance"])
+    ...mapGetters(["countStacks", "pairedLength", "bookBalance", "bankBalance"])
   },
 
   filters: {

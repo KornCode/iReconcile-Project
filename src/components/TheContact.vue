@@ -116,9 +116,10 @@
           </b-card>
         </b-col>
         <b-col sm-4>
-          <b-list-group>
+          <b-list-group class="overflow-hidden">
             <b-list-group-item
               class="d-flex justify-content-between align-items-center"
+              style="border-radius: 20px 20px 0px 0px"
             >
               <!-- <font-awesome-icon icon="phone" /> -->
               <div v-text="$ml.get('contactPhone')" />
@@ -127,6 +128,7 @@
 
             <b-list-group-item
               class="d-flex justify-content-between align-items-center"
+              style="border-radius: 0px 0px 20px 20px"
             >
               <div v-text="$ml.get('contactMail')" />
               <b-badge variant="primary" pill>irecon@gmail.co.th</b-badge>
@@ -164,6 +166,7 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
 
+      this.show_success = false;
       this.show_failed = false;
       this.show_spinner = true;
 

@@ -12,7 +12,8 @@ import {
   faArrowAltCircleLeft,
   faFileCsv,
   faFilePdf,
-  faPhone
+  faPhone,
+  faEnvelope
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import axios from "axios";
@@ -25,7 +26,8 @@ library.add(
   faArrowAltCircleLeft,
   faFileCsv,
   faFilePdf,
-  faPhone
+  faPhone,
+  faEnvelope
 );
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 

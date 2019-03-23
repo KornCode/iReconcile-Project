@@ -1,53 +1,45 @@
 <template>
   <div class="hello">
     <div style="display: inline-block;" class="w-75">
-      <b-button @click="generatePDF"
-        ><font-awesome-icon icon="file-pdf"
-      /></b-button>
-      <b-card no-body>
-        <b-tabs card>
-          <b-tab title="Book" active>
-            <b-row class="mb-4">
-              <b-col md="6" class="my-1">
-                <b-form-group horizontal label="Filter" class="mb-0">
-                  <b-input-group>
-                    <b-form-input
-                      v-model="filter_book"
-                      placeholder="Type to Search"
-                    />
-                    <b-input-group-append>
-                      <b-btn :disabled="!filter_book" @click="filter_book = ''"
-                        >Clear</b-btn
-                      >
-                    </b-input-group-append>
-                  </b-input-group>
-                </b-form-group>
-              </b-col>
-            </b-row>
+      <b-card no-body header-bg-variant="dark" header-text-variant="light">
+        <div slot="header" class="float-right">
+          <b-button variant="outline-info" @click="generatePDF">
+            Generate PDF
+          </b-button>
+        </div>
+        <div slot="header" class="float-left">
+          <b-form-group horizontal label="Filter" class="mb-0">
+            <b-input-group>
+              <b-form-input v-model="filter" placeholder="Type to Search" />
+              <b-input-group-append>
+                <b-btn :disabled="!filter" @click="filter = ''">Clear</b-btn>
+              </b-input-group-append>
+            </b-input-group>
+          </b-form-group>
+        </div>
 
-            <b-table
-              hover
-              small
-              :items="list_items"
-              :fields="fields"
-              :filter="filter_book"
-              caption-top
-              :responsive="true"
-            >
-              <template slot="undo" slot-scope="row">
-                <div class="pt-3">
-                  <b-button
-                    variant="danger"
-                    size="sm"
-                    @click="undo(row.item.index)"
-                  >
-                    undo {{ row.item.index }}
-                  </b-button>
-                </div>
-              </template>
-            </b-table>
-          </b-tab>
-        </b-tabs>
+        <b-table
+          hover
+          small
+          fixed
+          :items="list_items"
+          :fields="fields"
+          :filter="filter"
+          caption-top
+          :responsive="true"
+        >
+          <template slot="undo" slot-scope="row">
+            <div class="">
+              <b-button
+                variant="warning"
+                size="sm"
+                @click="undo(row.item.index)"
+              >
+                <font-awesome-icon icon="undo" />
+              </b-button>
+            </div>
+          </template>
+        </b-table>
       </b-card>
     </div>
   </div>
@@ -77,8 +69,7 @@ export default {
         "undo"
       ],
 
-      filter_book: null,
-      filter_bank: null
+      filter: null
     };
   },
 
