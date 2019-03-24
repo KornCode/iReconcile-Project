@@ -1,7 +1,12 @@
 <template>
   <div class="chart">
     <b-card-group deck>
-      <b-card header=" " header-tag="header" class="overflow-hidden" style="border-radius: 30px">
+      <b-card
+        header=" "
+        header-tag="header"
+        class="overflow-hidden"
+        style="border-radius: 30px"
+      >
         <div slot="header" class="float-left">
           <h2>Chart</h2>
         </div>

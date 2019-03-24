@@ -349,6 +349,9 @@ export default {
     let items_book = this.files.book;
     let items_bank = this.files.bank;
 
+    let values = Object.values(paired);
+    const values_len = values.length;
+
     // transfer options for Transfer Modal
     this.getTransferOptions();
 
@@ -356,21 +359,22 @@ export default {
     this.getRefOptions(items_bank);
 
     // {Array} index of null
-    let book_null = index_of_null(paired);
+    let book_null = index_of_null(values, values_len);
 
     // iteration of object paired
-    for (var key in paired) {
-      var value = paired[key];
+    const timerDateFindLodash = new Date();
+    for (var i = 0, len = values_len; i < len; i++) {
+      var value = values[i];
       let obj = {
         book: null,
-        bank: items_bank[key],
+        bank: items_bank[i],
         matched: null,
-        index: parseInt(key, 10),
+        index: i,
         metas: {
-          transfer: items_bank[key].Bank_Entity,
+          transfer: items_bank[i].Bank_Entity,
           create: {
             who: null,
-            what: items_bank[key].Reference,
+            what: items_bank[i].Reference,
             why: null
           },
           comment: null
@@ -381,10 +385,11 @@ export default {
         obj.book = items_book[value];
       } else {
         obj.matched = false;
-        obj.book = items_book[book_null.shift()];
+        obj.book = items_book[book_null.shift()]; // index of null
       }
       this.$store.dispatch("pushItems", obj);
     }
+    console.log('lodash time', new Date() - timerDateFindLodash);
   },
 
   methods: {
@@ -510,19 +515,19 @@ export default {
   },
 
   filters: {
+    // 12345 to 12,345
     numFormatting: function(number) {
-      if (number) {
+      if (number) { //skip null
         return number.toLocaleString("en");
       }
     }
   }
 };
 
-function index_of_null(paired) {
-  let value = Object.values(paired);
+function index_of_null(values, val_len) {
   let missing = [];
-  for (var i = 0, len = value.length; i < len; i++) {
-    if (value.indexOf(i) == -1) {
+  for (var i = 0, len = val_len; i < len; i++) {
+    if (values.indexOf(i) == -1) {
       missing.push(i);
     }
   }
@@ -568,5 +573,9 @@ function index_of_null(paired) {
 
 p {
   margin: 0;
+}
+
+hr {
+  border-top: 1px solid #000;
 }
 </style>

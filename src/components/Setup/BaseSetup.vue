@@ -22,7 +22,7 @@
     </div>
 
     <div style="display: inline-block;" class="w-75">
-      <transition leave-active-class="animated slideOutDown">
+      <transition leave-active-class="animated fadeOutUpBig">
         <div v-show="show_setup">
           <b-jumbotron
             class="pt-4 pb-4 shadow-sm"

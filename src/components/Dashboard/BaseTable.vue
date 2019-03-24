@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <div style="display: inline-block;" class="w-75">
+    <div style="display: inline-block; width: 90%;">
       <b-card no-body header-bg-variant="dark" header-text-variant="light">
         <div slot="header" class="float-right">
           <b-button variant="outline-info" @click="generatePDF">
@@ -62,6 +62,7 @@ export default {
       fields: [
         "Date",
         "Payee",
+        "Bank",
         "Reference",
         "Spent",
         "Received",
@@ -77,17 +78,22 @@ export default {
     ...mapActions(["undo"]),
 
     generatePDF() {
-      let doc = new jsPDF();
-      let body_data = this.list_items.map(obj => Object.values(obj));
+      if (Object.values(this.list_items).length !== 0) {
+        let doc = new jsPDF();
+        let body_data = this.list_items.map(obj => Object.values(obj));
 
-      doc.autoTable({
-        head: [
-          ["No", "Date", "Payee", "Reference", "Spent", "Received", "Comment"]
-        ],
-        body: body_data
-      });
+        doc.autoTable({
+          head: [
+            ["No", "Date", "Payee", "Bank", "Reference", "Spent", "Received", "Comment"]
+          ],
+          body: body_data
+        });
 
-      doc.save("table.pdf");
+        doc.save("table.pdf");
+      }
+      else {
+        alert('Table is empty.')
+      }
     },
 
     detectPageReload() {
@@ -95,6 +101,7 @@ export default {
         // Cancel the event as stated by the standard.
         event.preventDefault();
         // Chrome requires returnValue to be set.
+        this.generatePDF();
         event.returnValue = "";
       });
     }
@@ -114,6 +121,7 @@ export default {
           index: this.stack[key].index,
           Date: this.stack[key].bank.Date,
           Payee: this.stack[key].book.Desc,
+          Bank: this.stack[key].bank.Bank_Entity,
           Reference: this.stack[key].metas.create.what,
           Spent: this.stack[key].bank.Deposit,
           Received: this.stack[key].bank.Withdraw,

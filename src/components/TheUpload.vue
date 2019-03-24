@@ -1,9 +1,7 @@
 <template>
   <div class="upload">
     <div id="align_center" class="w-50 center-xy">
-      <transition
-        leave-active-class="animated rollOut"
-      >
+      <transition leave-active-class="animated fadeOutUpBig">
         <div v-show="show_upload">
           <b-card-group deck>
             <b-card
@@ -99,9 +97,7 @@
       </transition>
     </div>
 
-    <transition
-      enter-active-class="animated rollIn delay-1s"
-    >
+    <transition enter-active-class="animated fadeInUpBig">
       <Setup
         v-if="show_setupfile"
         :files="files"

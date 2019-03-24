@@ -18,7 +18,7 @@
               </b-card-text>
             </b-card-body>
             <b-button
-              variant="outline-info"
+              variant="primary"
               size="lg"
               to="/uploadfile"
               v-text="$ml.get('homeUploadButton')"
@@ -42,7 +42,7 @@
 // @ is an alias to /src
 
 export default {
-  name: "home"
+  name: "home",
 };
 </script>
 
