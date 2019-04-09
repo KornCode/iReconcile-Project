@@ -55,6 +55,59 @@
     </b-modal>
 
     <!-- --------------------- -->
+    <!-- MODAL EDIT BANK -->
+    <!-- --------------------- -->
+    <b-modal
+      v-model="show_modalEditBank"
+      ref="modalEditBank"
+      title="Submit editBank"
+      @ok="handleOk_MEditBank"
+      @shown="clearEditBank"
+    >
+      <div slot="modal-title" v-text="$ml.get('matchModalEditBankHeader')" />
+      <form @submit.stop.prevent="handleSubmit_MEditBank">
+        <b-row class="my-2">
+          <b-col sm="2"><label>Date</label></b-col>
+          <b-col sm="10"
+            ><b-form-input
+              type="date"
+              v-model="bank_obj.Date"
+              @keyup.enter="handleSubmit_MEditBank"
+          /></b-col>
+        </b-row>
+        <b-row class="my-2">
+          <b-col sm="2"><label>Desc</label></b-col>
+          <b-col sm="10"
+            ><b-form-input
+              type="text"
+              v-model="bank_obj.Desc"
+              @keyup.enter="handleSubmit_MEditBank"
+          /></b-col>
+        </b-row>
+        <b-row class="my-2">
+          <b-col sm="2"><label>Deposit</label></b-col>
+          <b-col sm="10"
+            ><b-form-input
+              type="number"
+              v-model="bank_obj.Deposit"
+              @keyup.enter="handleSubmit_MEditBank"
+          /></b-col>
+        </b-row>
+        <b-row class="my-2">
+          <b-col sm="2"><label>Withdraw</label></b-col>
+          <b-col sm="10"
+            ><b-form-input
+              type="number"
+              v-model="bank_obj.Withdraw"
+              @keyup.enter="handleSubmit_MEditBank"
+          /></b-col>
+        </b-row>
+      </form>
+      <div slot="modal-ok" v-text="$ml.get('ok')" />
+      <div slot="modal-cancel" v-text="$ml.get('cancel')" />
+    </b-modal>
+
+    <!-- --------------------- -->
     <!-- MODAL COMMENT -->
     <!-- --------------------- -->
     <b-modal
@@ -104,15 +157,37 @@
       <div slot="modal-cancel" v-text="$ml.get('cancel')" />
     </b-modal>
 
+    <!-- --------------------- -->
+    <!-- MODAL SWAP -->
+    <!-- --------------------- -->
+    <b-modal
+      v-model="show_modalSwap"
+      ref="modalSwap"
+      title="Submit swap"
+      @ok="handleOk_MSwap"
+      @shown="clearSwap"
+    >
+      <div slot="modal-title" v-text="$ml.get('matchModalSwapHeader')" />
+      <form @submit.stop.prevent="handleSubmit_MSwap">
+        <b-row class="m-1">
+          <b-form-select
+            v-model="swap"
+            :options="swap_options"
+            :select-size="4"
+          />
+        </b-row>
+      </form>
+      <div slot="modal-ok" v-text="$ml.get('ok')" />
+      <div slot="modal-cancel" v-text="$ml.get('cancel')" />
+    </b-modal>
+
     <div style="display: inline-block;" class="w-100">
       <div class="sticky-top bg-white">
         <b-row align-h="center" class="mb-3">
           <b-col cols="5">
-            <p
-              class="text-left"
-              style="font-size: 18px;"
-              v-text="$ml.get('matchColBank')"
-            />
+            <p class="text-left" style="font-size: 18px;">
+              Review your bank statement lines...
+            </p>
             <hr />
             <b-row align-h="center" class="mb-3">
               <b-col></b-col>
@@ -128,16 +203,14 @@
           <b-col cols="1" align-self="center">
             <b-row align-h="center" class="mt-2">
               <b-badge variant="warning" pill>
-                {{ countStacks }} of {{ pairedLength }}
+                {{ countStackUnmatch }} of {{ remainingLength }}
               </b-badge>
             </b-row>
           </b-col>
           <b-col cols="5">
-            <p
-              class="text-left"
-              style="font-size: 18px;"
-              v-text="$ml.get('matchColBook')"
-            />
+            <p class="text-left" style="font-size: 18px;">
+              ...then match with your transactions
+            </p>
             <hr />
             <b-row align-h="center" class="mb-3">
               <b-col></b-col>
@@ -162,6 +235,25 @@
                   header-tag="header"
                   border-variant="secondary"
                 >
+                  <div slot="header">
+                    <b-row>
+                      <b-col>
+                        <p>Index {{ item.index }}</p>
+                      </b-col>
+                      <b-col
+                        ><b-link
+                          @click="handleClick_MSwap(index)"
+                          v-text="$ml.get('matchModalSwap')"
+                        />
+                      </b-col>
+                      <b-col
+                        ><b-link
+                          @click="handleClick_MEditBank(index)"
+                          v-text="$ml.get('matchModalEditBank')"
+                        />
+                      </b-col>
+                    </b-row>
+                  </div>
                   <div slot="footer" class="float-right">
                     <b-link
                       @click="openModal(item.bank)"
@@ -192,7 +284,7 @@
                         <b-col>
                           <div class="top-right font-weight-bold">
                             <p class="spent">
-                              {{ row.Withdraw | numFormatting }}
+                              {{ row.Deposit | numFormatting }}
                             </p>
                           </div>
                         </b-col>
@@ -200,7 +292,7 @@
                         <b-col>
                           <div class="top-right font-weight-bold">
                             <p class="received">
-                              {{ row.Deposit | numFormatting }}
+                              {{ row.Withdraw | numFormatting }}
                             </p>
                           </div>
                         </b-col>
@@ -209,7 +301,7 @@
                     </div>
                   </div>
                   <div v-else>
-                    <b-row>
+                    <b-row v-if="item !== null">
                       <b-col cols="6">
                         <div class="text-left">
                           <p class="date font-weight-bold">
@@ -245,7 +337,15 @@
             </b-col>
 
             <b-col cols="1" align-self="center">
-              <b-button @click="del(index)" variant="outline-success">
+              <b-button
+                v-if="item.match"
+                key="checkMatch"
+                @click="del(index)"
+                variant="outline-success"
+              >
+                <font-awesome-icon icon="check" />
+              </b-button>
+              <b-button v-else key="checkMatch" @click="del(index)" disabled>
                 <font-awesome-icon icon="check" />
               </b-button>
             </b-col>
@@ -255,14 +355,14 @@
                 <b-card border-variant="secondary">
                   <div slot="header">
                     <b-row>
-                      <b-col v-if="!item.group">
-                        <b-link
+                      <b-col
+                        ><b-link
                           @click="handleClick_MTransfer(index)"
                           v-text="$ml.get('matchModalTransfer')"
                         />
                       </b-col>
-                      <b-col v-if="!item.group">
-                        <b-link
+                      <b-col
+                        ><b-link
                           @click="handleClick_MCreate(index)"
                           v-text="$ml.get('matchModalCreate')"
                         />
@@ -285,7 +385,7 @@
                     <b-badge variant="info">{{ book_account }}</b-badge>
                   </div>
                   <div v-if="item.group">
-                    <div v-for="(row, index) in item.book" :key="index">
+                    <!-- <div v-for="(row, index) in item.book" :key="index">
                       <b-row>
                         <b-col sm="6">
                           <div class="text-left">
@@ -313,7 +413,7 @@
                         </b-col>
                       </b-row>
                       <hr />
-                    </div>
+                    </div> -->
                   </div>
                   <div v-else>
                     <b-row>
@@ -358,7 +458,7 @@ import ModalMixins from "./Mixins/ModalMixins.js";
 import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
-  name: "Match",
+  name: "Unmatch",
 
   mixins: [ModalMixins],
 
@@ -370,15 +470,18 @@ export default {
 
   computed: {
     ...mapState(["files", "book_account", "bank_accounts", "bank_ref"]),
-    ...mapState("Match", ["items", "paired", "grouped"]),
-    ...mapGetters("Match", ["countStacks", "pairedLength"])
+
+    ...mapState("Unmatch", ["remaining", "items"]),
+
+    ...mapGetters("Unmatch", ["countStackUnmatch", "remainingLength"])
   },
 
   created() {
-    let paired = this.paired;
-    let grouped = this.grouped;
     let items_book = this.files.book;
     let items_bank = this.files.bank;
+
+    let remainsBook = this.remaining.book;
+    let remainsBank = this.remaining.bank;
 
     // transfer options for Transfer Modal
     this.getTransferOptions();
@@ -386,91 +489,49 @@ export default {
     // ref options for create.who of Create Modal
     this.getRefOptions(items_bank);
 
-    let iterator = 0;
-
-    // iteration of object paired
-    for (var key_i in paired) {
-      var value = paired[key_i];
+    for (var i = 0, len = this.remainingLength; i < len; i++) {
+      let bookIndex = remainsBook[i];
+      let bankIndex = remainsBank[i];
       let obj = {
-        book: items_book[value],
-        bank: items_bank[key_i],
+        book: items_book[bookIndex] || "null",
+        bank: items_bank[bankIndex] || "null",
         group: false,
-        index: iterator,
+        match: false,
+        index: i,
         metas: {
-          transfer: items_bank[key_i].Bank_Entity,
+          transfer: items_bank[bankIndex].Bank_Entity || "null",
           create: {
             who: null,
-            what: items_bank[key_i].Reference,
+            what: items_bank[bankIndex].Reference || "null",
             why: null
           },
           comment: null
         }
       };
-      iterator += 1;
-      this.$store.dispatch("Match/pushItems", obj);
-    }
-
-    let groupVal = Object.values(grouped);
-    for (var key_j in groupVal) {
-      let bookIndex = groupVal[key_j].ledger;
-      let bankIndex = groupVal[key_j].bank;
-      let temp1 = [];
-      let temp2 = [];
-      bookIndex.forEach(index => {
-        temp1.push(items_book[index]);
-      });
-      bankIndex.forEach(index => {
-        temp2.push(items_bank[index]);
-      });
-
-      let obj = {
-        book: temp1,
-        bank: temp2,
-        group: true,
-        index: iterator,
-        metas: {
-          transfer: null,
-          create: {
-            who: null,
-            what: null,
-            why: null
-          },
-          comment: null
-        }
-      };
-      iterator += 1;
-
-      this.$store.dispatch("Match/pushItems", obj);
+      this.$store.dispatch("Unmatch/pushItems", obj);
     }
   },
 
   methods: {
-    ...mapActions("Match", ["undo_match", "del", "replaceItems"])
+    ...mapActions("Unmatch", [
+      "del", // template
+      "replaceItems", // BaseUnmatch
+      "swapItems", // BaseUnmatch
+      "editBank" // BaseUnmatch
+    ])
   },
 
   filters: {
-    // 12345 to 12,345
+    // ex 12345 to 12,345
     numFormatting: function(number) {
       if (number) {
-        //skip null
         return number.toLocaleString("en");
       }
     }
   }
 };
-
-// function index_of_null(values, val_len) {
-//   let missing = [];
-//   for (var i = 0, len = val_len; i < len; i++) {
-//     if (values.indexOf(i) == -1) {
-//       missing.push(i);
-//     }
-//   }
-//   return missing;
-// }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .vr {
   border-right: 1px solid #ccc;

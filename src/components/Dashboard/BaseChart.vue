@@ -42,8 +42,6 @@
 import ChartMixins from "./Mixins/ChartMixins.js";
 import { mapState } from "vuex";
 
-("use strict");
-
 export default {
   name: "Chart",
 

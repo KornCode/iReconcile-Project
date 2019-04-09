@@ -54,6 +54,11 @@ export default new MLCreate({
       setupHeader: "Reconsile Setup",
       setupParseButton: "Start Parsing",
 
+      setupColStatement:
+        "We need to make sure we got the right columns name, please confirm each column name.",
+      setupColRange:
+        "Set range of date for matching. Set to zero for no error.",
+
       setupBookStatement: "Ledger Statement",
       setupBookDate: "Date",
       setupBookDescription: "Description",
@@ -80,6 +85,9 @@ export default new MLCreate({
       cancel: "Cancel",
       matchModalMore: "More",
 
+      matchColBank: "Review your bank statement lines...",
+      matchColBook: "...then match with your transactions",
+
       matchModalTransfer: "Transfer",
       matchModalTransferHeader: "Submit transfer",
 
@@ -88,6 +96,12 @@ export default new MLCreate({
 
       matchModalComment: "Comment",
       matchModalCommentHeader: "Submit comment",
+
+      matchModalSwap: "Swap",
+      matchModalSwapHeader: "Submit swap",
+
+      matchModalEditBank: "Edit",
+      matchModalEditBankHeader: "Submit edit",
 
       matchSpent: "Spent",
       matchReceived: "Received",
@@ -149,6 +163,10 @@ export default new MLCreate({
       setupHeader: "ตั้งค่าการทำงาน",
       setupParseButton: "เริ่มต้นกระทบยอด",
 
+      setupColStatement: "กรุณาเลือกชื่อคอลัมให้ตรงกับความหมาย",
+      setupColRange:
+        "ตั้งค่าความคลาดเคลื่อนของวันที่ ตั้งค่าไว้ที่ 0 ในกรณีที่ไม่ต้องการความคลาดเคลื่อน",
+
       setupBookStatement: "บัญชีบริษัท",
       setupBookDate: "วันที่",
       setupBookDescription: "รายละเอียด",
@@ -175,6 +193,9 @@ export default new MLCreate({
       cancel: "ยกเลิก",
       matchModalMore: "เพิมเติม",
 
+      matchColBank: "ตรวจดูรายการของธนาคาร...",
+      matchColBook: "...เพื่อกระทบยอดกับการการของบริษัท",
+
       matchModalTransfer: "บัญชีบริษัท",
       matchModalTransferHeader: "แก้ไขบัญชีบริษัท",
 
@@ -183,6 +204,12 @@ export default new MLCreate({
 
       matchModalComment: "รายละเอียด",
       matchModalCommentHeader: "แก้ไขรายละเอียด",
+
+      matchModalSwap: "สลับ",
+      matchModalSwapHeader: "ยืนยัน",
+
+      matchModalEditBank: "แก้ไข",
+      matchModalEditBankHeader: "ยืนยัน",
 
       matchSpent: "เงินออก",
       matchReceived: "เงินเข้า",

@@ -153,7 +153,12 @@ export default {
         category: null,
         checked: []
       },
-      categories: [{ text: "Select One", value: null }, "A", "B", "C", "D"],
+      categories: [
+        { text: "Select One", value: null },
+        "Bug report",
+        "Compliment",
+        "Other"
+      ],
       show: true,
 
       show_spinner: false,

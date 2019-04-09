@@ -40,21 +40,24 @@
             />
             <div v-show="show_progress">
               <hr class="my-4" />
-              <b-progress
-                :value="progress_value"
-                :max="100"
-                height="10px"
-                :precision="2"
-                show-value
-              />
+              <div class="text-center">
+                <b-spinner type="grow" label="Spinning"></b-spinner>
+                <b-spinner
+                  variant="primary"
+                  type="grow"
+                  label="Spinning"
+                ></b-spinner>
+                <b-spinner
+                  variant="success"
+                  type="grow"
+                  label="Spinning"
+                ></b-spinner>
+              </div>
             </div>
           </b-jumbotron>
 
           <b-col cols="5" class="pl-0 float-left">
-            <p class="text-left">
-              We need to make sure we got the right columns name, <br />please
-              confirm each column name.
-            </p>
+            <p class="text-left" v-text="$ml.get('setupColStatement')" />
             <hr />
 
             <div class="pt-3" align="left">
@@ -226,10 +229,7 @@
           </b-col>
 
           <b-col cols="7" class="pr-0 float-right">
-            <p class="text-left">
-              Set range of date and range of amount for matching. <br />Set to
-              zero for no error.
-            </p>
+            <p class="text-left" v-text="$ml.get('setupColRange')" />
             <hr />
 
             <div class="pt-3" align="left">
@@ -254,22 +254,6 @@
                   />
                 </b-input-group>
                 <div class="mt-2" align="left">Value: {{ date_range }}</div>
-              </b-form-group>
-
-              <div class="my-4"></div>
-
-              <b-form-group
-                label-cols-lg="3"
-                label-size="lg"
-                label-class="font-weight-bold pt-0"
-                class="mb-0"
-                align="left"
-              >
-                <div slot="label" v-text="$ml.get('setupRangeAmount')" />
-                <b-input-group prepend="฿" append=".00">
-                  <b-form-input v-model="amount_range" />
-                </b-input-group>
-                <div class="mt-2" align="left">Value: {{ amount_range }}</div>
               </b-form-group>
             </b-card>
           </b-col>
@@ -315,45 +299,39 @@ export default {
       parsed_bank: [],
 
       date_range: 0,
-      amount_range: 0,
 
       show_progress: false,
-      progress_value: 0,
 
+      /*****
+       * Error handler variables
+       */
       show_failed: false,
       error_message: "",
-
       dismissSecs: 10,
       dismissCountDown: 0
     };
   },
 
   methods: {
-    ...mapActions([
-      "showNavDashboard",
-      "addFiles",
-      "addPairs",
-      "addBookAcc",
-      "addBankAcc"
-    ]),
+    ...mapActions(["showNavDashboard", "addFiles", "addBookAcc", "addBankAcc"]),
 
     submitSetup() {
-      /*************************
+      /******************
        * Book
        */
       this.files.book.data.forEach(item => {
         let obj = {
           Date: parseDate(item[this.fields.book.date]),
           Desc: item[this.fields.book.desc],
-          Debit: parseNumber(item[this.fields.book.debit]),
-          Credit: parseNumber(item[this.fields.book.credit]),
-          Balance: parseNumber(item[this.fields.book.balance])
+          Debit: str_to_number(item[this.fields.book.debit]),
+          Credit: str_to_number(item[this.fields.book.credit]),
+          Balance: str_to_number(item[this.fields.book.balance])
         };
 
         this.parsed_book.push(obj);
       });
 
-      /*************************
+      /******************
        * Bank
        */
       this.files.bank.forEach((each, index) => {
@@ -361,10 +339,10 @@ export default {
           let obj = {
             Date: parseDate(item[this.fields.bank.date[index]]),
             Desc: item[this.fields.bank.desc[index]],
-            Deposit: parseNumber(item[this.fields.bank.deposit[index]]),
+            Deposit: str_to_number(item[this.fields.bank.deposit[index]]),
             Reference: item[this.fields.bank.ref[index]],
-            Withdraw: parseNumber(item[this.fields.bank.withdraw[index]]),
-            Balance: parseNumber(item[this.fields.bank.balance[index]]),
+            Withdraw: str_to_number(item[this.fields.bank.withdraw[index]]),
+            Balance: str_to_number(item[this.fields.bank.balance[index]]),
             Bank_Entity: this.fileNames.bank[index]
           };
 
@@ -389,34 +367,34 @@ export default {
       let formData = new FormData();
       formData.append("file_book", Papa.unparse(this.parsed_book));
       formData.append("file_bank", Papa.unparse(this.parsed_bank));
-      formData.append("ranges[]", this.date_range);
-      formData.append("ranges[]", this.amount_range);
+      formData.append("date_range", this.date_range);
 
       // State Action Dispatch
       let files_payload = { book: this.parsed_book, bank: this.parsed_bank };
       this.addFiles(files_payload);
 
+      // toggle progress bar
       this.show_progress = true;
 
       this.$http({
         method: "post",
         url: "http://127.0.0.1:5000/main/",
+        // url: "https://3b7915af.ngrok.io/main/",
         data: formData,
-        headers: { "Content-Type": "multipart/form-data" },
-        onUploadProgress: progEvt => {
-          let percentCompleted = Math.round(
-            (progEvt.loaded * 100) / progEvt.total
-          );
-          this.progress_value = percentCompleted;
-        }
+        headers: { "Content-Type": "multipart/form-data" }
       })
         .then(obj => {
-          let matched = JSON.parse(obj.data);
-          this.addPairs(matched);
+          let matched = JSON.parse(obj.data[0]);
+          let grouped = JSON.parse(obj.data[1]);
+          let remains = { book: obj.data[2], bank: obj.data[3] };
+          this.$store.dispatch("Match/addPairs", matched);
+          this.$store.dispatch("Match/addGroups", grouped);
+          this.$store.dispatch("Unmatch/addRemains", remains);
           this.showNavDashboard(true);
           this.$router.push({ name: "dashboard" });
         })
         .catch(err => {
+          // initiate count down
           this.dismissCountDown = this.dismissSecs;
           this.show_progress = false;
           this.show_failed = true;
@@ -437,12 +415,9 @@ export default {
   },
 
   watch: {
-    progress_value(newVal) {
-      if (newVal == 100) {
-        this.show_setup = false;
-      }
-    },
-
+    /*****
+     * Error handler variables
+     */
     dismissCountDown: function(newVal) {
       if (newVal == 0) {
         location.reload();
@@ -451,12 +426,8 @@ export default {
   }
 };
 
-function parseNumber(number, dtype = "float") {
-  if (number && dtype === "int") {
-    return parseInt(number.replace(",", ""), 10);
-  } else if (number && dtype === "float") {
-    return parseFloat(number.replace(",", ""));
-  }
+function str_to_number(number) {
+  return number && +(number.replace(",", ""));
 }
 
 function parseDate(date_str) {
@@ -477,5 +448,9 @@ function parseDate(date_str) {
 
 #align_center {
   margin: 0 auto;
+}
+
+hr {
+  border-top: 1px solid #000;
 }
 </style>

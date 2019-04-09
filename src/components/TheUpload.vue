@@ -115,6 +115,7 @@ import Papa from "papaparse";
 
 import Setup from "@/components/Setup/BaseSetup.vue";
 import { MyFunctions } from "@/MyFunctions.js";
+import { mapActions } from "vuex";
 
 export default {
   name: "Upload",
@@ -173,6 +174,8 @@ export default {
   },
 
   methods: {
+    ...mapActions(["addRawFiles"]),
+
     submitFiles() {
       if (this.file_book && this.file_bank) {
         let parseBookPromise = file => {
@@ -234,8 +237,7 @@ export default {
     },
 
     retrieveData(payload) {
-      // Check if data are accepted
-      this.checkNumRows(payload.parsedBook, payload.parsedBank);
+      this.addRawFiles({ book: payload.parsedBook, banks: payload.parsedBank });
 
       // Prop data (files) -------------
       this.files.book = payload.parsedBook;
@@ -253,21 +255,8 @@ export default {
       // -------------------------------
     },
 
-    checkNumRows(book, bank) {
-      let bookLength = book.data.length;
-      let bankLength = 0;
-
-      bank.forEach(obj => {
-        bankLength += obj.data.length;
-      });
-
-      if (bookLength != bankLength) {
-        throw new RangeError("Ledger rows and Bank rows is not equal.");
-      }
-    },
-
     selectColumnToken() {
-      let token_book = new TokenSetRatio(this.columns.book);
+      let token_book = new BookColumns(this.columns.book);
 
       this.fields.book.date = token_book.selectDate;
       this.fields.book.desc = token_book.selectDesc;
@@ -276,7 +265,7 @@ export default {
       this.fields.book.balance = token_book.selectBalance;
 
       for (var i = 0, len = this.columns.bank.length; i < len; i++) {
-        let token_bank = new TokenSetRatio(this.columns.bank[i]);
+        let token_bank = new BankColumns(this.columns.bank[i]);
         this.fields.bank.date.push(token_bank.selectDate);
         this.fields.bank.desc.push(token_bank.selectDesc);
         this.fields.bank.ref.push(token_bank.selectReference);
@@ -305,26 +294,11 @@ class TokenSetRatio {
     this.columns = columns;
   }
 
-  get selectDate() {
-    return this.token_set_ratio("Date");
-  }
   get selectDesc() {
     return this.token_set_ratio("Description");
   }
-  get selectDebit() {
-    return this.token_set_ratio("Debit");
-  }
-  get selectCredit() {
-    return this.token_set_ratio("Credit");
-  }
-  get selectDeposit() {
-    return this.token_set_ratio("Deposit");
-  }
-  get selectWithdraw() {
-    return this.token_set_ratio("Withdraw");
-  }
-  get selectReference() {
-    return this.token_set_ratio("Reference");
+  get selectDate() {
+    return this.token_set_ratio("Date");
   }
   get selectBalance() {
     return this.token_set_ratio("Balance");
@@ -335,6 +309,35 @@ class TokenSetRatio {
       return fuzz.token_set_ratio(o, select_col) > 80 ? true : false;
     });
     return result;
+  }
+}
+
+class BookColumns extends TokenSetRatio {
+  constructor(columns) {
+    super(columns);
+  }
+
+  get selectDebit() {
+    return this.token_set_ratio("Debit");
+  }
+  get selectCredit() {
+    return this.token_set_ratio("Credit");
+  }
+}
+
+class BankColumns extends TokenSetRatio {
+  constructor(columns) {
+    super(columns);
+  }
+
+  get selectDeposit() {
+    return this.token_set_ratio("Deposit");
+  }
+  get selectWithdraw() {
+    return this.token_set_ratio("Withdraw");
+  }
+  get selectReference() {
+    return this.token_set_ratio("Reference");
   }
 }
 
