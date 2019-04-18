@@ -8,45 +8,24 @@
     </b-modal>
 
     <!-- --------------------- -->
-    <!-- MODAL CREATE -->
+    <!-- MODAL MERGE BANK -->
     <!-- --------------------- -->
     <b-modal
-      v-model="show_modalCreate"
-      ref="modalCreate"
-      title="Submit creation"
-      @ok="handleOk_MCreate"
-      @shown="clearCreate"
+      v-model="show_modalMergeBank"
+      ref="modalMergeBank"
+      title="Submit merge bank"
+      @ok="handleOk_MMergeBank"
+      @shown="clearMergeBank"
     >
-      <div slot="modal-title" v-text="$ml.get('matchModalCreateHeader')" />
-      <form @submit.stop.prevent="handleSubmit_MCreate">
+      <div slot="modal-title" v-text="$ml.get('matchModalMergeBankHeader')" />
+      <form @submit.stop.prevent="handleSubmit_MMergeBank">
         <b-row class="my-2">
-          <b-col sm="2"><label>Who</label></b-col>
+          <b-col sm="2"><label>Merge lists</label></b-col>
           <b-col sm="10"
-            ><b-form-input
-              type="text"
-              placeholder="Name of the contact..."
-              v-model="create.who"
-              @keyup.enter="handleSubmit_MCreate"
-          /></b-col>
-        </b-row>
-        <b-row class="my-2">
-          <b-col sm="2"><label>What</label></b-col>
-          <b-col sm="10">
-            <b-form-select
-              v-model="create.what"
-              :options="ref_options"
-              :select-size="1"
-            />
-          </b-col>
-        </b-row>
-        <b-row class="my-2">
-          <b-col sm="2"><label>Why</label></b-col>
-          <b-col sm="10"
-            ><b-form-input
-              type="text"
-              placeholder="Enter a description..."
-              v-model="create.why"
-              @keyup.enter="handleSubmit_MCreate"
+            ><b-form-select
+              v-model="mergeBank"
+              :options="mergeBank_options"
+              :select-size="4"
           /></b-col>
         </b-row>
       </form>
@@ -55,24 +34,50 @@
     </b-modal>
 
     <!-- --------------------- -->
-    <!-- MODAL EDIT BANK -->
+    <!-- MODAL MERGE BANK -->
     <!-- --------------------- -->
     <b-modal
-      v-model="show_modalEditBank"
-      ref="modalEditBank"
-      title="Submit editBank"
-      @ok="handleOk_MEditBank"
-      @shown="clearEditBank"
+      v-model="show_modalMergeBook"
+      ref="modalMergeBook"
+      title="Submit merge book"
+      @ok="handleOk_MMergeBook"
+      @shown="clearMergeBook"
     >
-      <div slot="modal-title" v-text="$ml.get('matchModalEditBankHeader')" />
-      <form @submit.stop.prevent="handleSubmit_MEditBank">
+      <div slot="modal-title" v-text="$ml.get('matchModalMergeBookHeader')" />
+      <form @submit.stop.prevent="handleSubmit_MMergeBook">
+        <b-row class="my-2">
+          <b-col sm="2"><label>Merge lists</label></b-col>
+          <b-col sm="10"
+            ><b-form-select
+              v-model="mergeBook"
+              :options="mergeBook_options"
+              :select-size="4"
+          /></b-col>
+        </b-row>
+      </form>
+      <div slot="modal-ok" v-text="$ml.get('ok')" />
+      <div slot="modal-cancel" v-text="$ml.get('cancel')" />
+    </b-modal>
+
+    <!-- --------------------- -->
+    <!-- MODAL CREATE BANK -->
+    <!-- --------------------- -->
+    <b-modal
+      v-model="show_modalCreateBank"
+      ref="modalCreateBank"
+      title="Submit bank creation"
+      @ok="handleOk_MCreateBank"
+      @shown="clearCreateBank"
+    >
+      <div slot="modal-title" v-text="$ml.get('matchModalCreateBankHeader')" />
+      <form @submit.stop.prevent="handleSubmit_MCreateBank">
         <b-row class="my-2">
           <b-col sm="2"><label>Date</label></b-col>
           <b-col sm="10"
             ><b-form-input
               type="date"
-              v-model="bank_obj.Date"
-              @keyup.enter="handleSubmit_MEditBank"
+              v-model="createBank.Date"
+              @keyup.enter="handleSubmit_MCreateBank"
           /></b-col>
         </b-row>
         <b-row class="my-2">
@@ -80,8 +85,26 @@
           <b-col sm="10"
             ><b-form-input
               type="text"
-              v-model="bank_obj.Desc"
-              @keyup.enter="handleSubmit_MEditBank"
+              v-model="createBank.Desc"
+              @keyup.enter="handleSubmit_MCreateBank"
+          /></b-col>
+        </b-row>
+        <b-row class="my-2">
+          <b-col sm="2"><label>Ref</label></b-col>
+          <b-col sm="10"
+            ><b-form-input
+              type="text"
+              v-model="createBank.Reference"
+              @keyup.enter="handleSubmit_MCreateBank"
+          /></b-col>
+        </b-row>
+        <b-row class="my-2">
+          <b-col sm="2"><label>Entity</label></b-col>
+          <b-col sm="10"
+            ><b-form-input
+              type="text"
+              v-model="createBank.Entity"
+              @keyup.enter="handleSubmit_MCreateBank"
           /></b-col>
         </b-row>
         <b-row class="my-2">
@@ -89,8 +112,8 @@
           <b-col sm="10"
             ><b-form-input
               type="number"
-              v-model="bank_obj.Deposit"
-              @keyup.enter="handleSubmit_MEditBank"
+              v-model="createBank.Deposit"
+              @keyup.enter="handleSubmit_MCreateBank"
           /></b-col>
         </b-row>
         <b-row class="my-2">
@@ -98,8 +121,70 @@
           <b-col sm="10"
             ><b-form-input
               type="number"
-              v-model="bank_obj.Withdraw"
-              @keyup.enter="handleSubmit_MEditBank"
+              v-model="createBank.Withdraw"
+              @keyup.enter="handleSubmit_MCreateBank"
+          /></b-col>
+        </b-row>
+      </form>
+      <div slot="modal-ok" v-text="$ml.get('ok')" />
+      <div slot="modal-cancel" v-text="$ml.get('cancel')" />
+    </b-modal>
+
+    <!-- --------------------- -->
+    <!-- MODAL CREATE BOOK -->
+    <!-- --------------------- -->
+    <b-modal
+      v-model="show_modalCreateBook"
+      ref="modalCreateBook"
+      title="Submit book creation"
+      @ok="handleOk_MCreateBook"
+      @shown="clearCreateBook"
+    >
+      <div slot="modal-title" v-text="$ml.get('matchModalCreateBookHeader')" />
+      <form @submit.stop.prevent="handleSubmit_MCreateBook">
+        <b-row class="my-2">
+          <b-col sm="2"><label>Date</label></b-col>
+          <b-col sm="10"
+            ><b-form-input
+              type="date"
+              v-model="createBook.Date"
+              @keyup.enter="handleSubmit_MCreateBook"
+          /></b-col>
+        </b-row>
+        <b-row class="my-2">
+          <b-col sm="2"><label>Desc</label></b-col>
+          <b-col sm="10"
+            ><b-form-input
+              type="text"
+              v-model="createBook.Desc"
+              @keyup.enter="handleSubmit_MCreateBook"
+          /></b-col>
+        </b-row>
+        <b-row class="my-2">
+          <b-col sm="2"><label>Entity</label></b-col>
+          <b-col sm="10"
+            ><b-form-input
+              type="text"
+              v-model="createBook.Entity"
+              @keyup.enter="handleSubmit_MCreateBook"
+          /></b-col>
+        </b-row>
+        <b-row class="my-2">
+          <b-col sm="2"><label>Debit</label></b-col>
+          <b-col sm="10"
+            ><b-form-input
+              type="number"
+              v-model="createBook.Debit"
+              @keyup.enter="handleSubmit_MCreateBook"
+          /></b-col>
+        </b-row>
+        <b-row class="my-2">
+          <b-col sm="2"><label>Credit</label></b-col>
+          <b-col sm="10"
+            ><b-form-input
+              type="number"
+              v-model="createBook.Credit"
+              @keyup.enter="handleSubmit_MCreateBook"
           /></b-col>
         </b-row>
       </form>
@@ -126,30 +211,6 @@
             rows="3"
             max-rows="6"
             @keyup.ctrl.enter="handleSubmit_MComment"
-          />
-        </b-row>
-      </form>
-      <div slot="modal-ok" v-text="$ml.get('ok')" />
-      <div slot="modal-cancel" v-text="$ml.get('cancel')" />
-    </b-modal>
-
-    <!-- --------------------- -->
-    <!-- MODAL TRANSFER -->
-    <!-- --------------------- -->
-    <b-modal
-      v-model="show_modalTransfer"
-      ref="modalTransfer"
-      title="Submit transfer"
-      @ok="handleOk_MTransfer"
-      @shown="clearTransfer"
-    >
-      <div slot="modal-title" v-text="$ml.get('matchModalTransferHeader')" />
-      <form @submit.stop.prevent="handleSubmit_MTransfer">
-        <b-row class="m-1">
-          <b-form-select
-            v-model="transfer"
-            :options="transfer_options"
-            :select-size="4"
           />
         </b-row>
       </form>
@@ -242,15 +303,21 @@
                       </b-col>
                       <b-col
                         ><b-link
-                          @click="handleClick_MSwap(index)"
-                          v-text="$ml.get('matchModalSwap')"
+                          v-if="editable(index)"
+                          @click="handleClick_MCreateBank(index)"
+                          v-text="$ml.get('matchModalCreateBank')"
                         />
                       </b-col>
                       <b-col
                         ><b-link
-                          @click="handleClick_MEditBank(index)"
-                          v-text="$ml.get('matchModalEditBank')"
+                          @click="handleClick_MMergeBank(index)"
+                          v-text="$ml.get('matchModalMergeBank')"
                         />
+                      </b-col>
+                      <b-col v-if="Array.isArray(item.bank)">
+                        <b-link @click="unmergeBankItems(index)"
+                          >Unmerge</b-link
+                        >
                       </b-col>
                     </b-row>
                   </div>
@@ -261,12 +328,13 @@
                     />
                   </div>
                   <div slot="footer" class="float-left">
-                    <b-badge variant="info">{{
-                      item.bank.Bank_Entity
-                    }}</b-badge>
+                    <b-badge variant="info">{{ item.bank.Entity }}</b-badge>
                   </div>
-                  <div v-if="item.group">
-                    <div v-for="(row, index) in item.bank" :key="index">
+                  <div v-if="Array.isArray(item.bank)">
+                    <div
+                      v-for="(row, index) in flatten(item.bank)"
+                      :key="index"
+                    >
                       <b-row>
                         <b-col cols="6">
                           <div class="text-left">
@@ -275,7 +343,7 @@
                             </p>
                             <p class="description">{{ row.Desc }}</p>
                             <p class="reference font-italic">
-                              <!-- {{ row.metas.create.what }} -->
+                              {{ row.Reference }}
                             </p>
                           </div>
                         </b-col>
@@ -284,7 +352,7 @@
                         <b-col>
                           <div class="top-right font-weight-bold">
                             <p class="spent">
-                              {{ row.Deposit | numFormatting }}
+                              {{ row.Withdraw | numFormatting }}
                             </p>
                           </div>
                         </b-col>
@@ -292,7 +360,7 @@
                         <b-col>
                           <div class="top-right font-weight-bold">
                             <p class="received">
-                              {{ row.Withdraw | numFormatting }}
+                              {{ row.Deposit | numFormatting }}
                             </p>
                           </div>
                         </b-col>
@@ -309,7 +377,7 @@
                           </p>
                           <p class="description">{{ item.bank.Desc }}</p>
                           <p class="reference font-italic">
-                            {{ item.metas.create.what }}
+                            {{ item.bank.Reference }}
                           </p>
                         </div>
                       </b-col>
@@ -357,14 +425,8 @@
                     <b-row>
                       <b-col
                         ><b-link
-                          @click="handleClick_MTransfer(index)"
-                          v-text="$ml.get('matchModalTransfer')"
-                        />
-                      </b-col>
-                      <b-col
-                        ><b-link
-                          @click="handleClick_MCreate(index)"
-                          v-text="$ml.get('matchModalCreate')"
+                          @click="handleClick_MCreateBook(index)"
+                          v-text="$ml.get('matchModalCreateBook')"
                         />
                       </b-col>
                       <b-col
@@ -372,6 +434,17 @@
                           @click="handleClick_MComment(index)"
                           v-text="$ml.get('matchModalComment')"
                         />
+                      </b-col>
+                      <b-col
+                        ><b-link
+                          @click="handleClick_MMergeBook(index)"
+                          v-text="$ml.get('matchModalMergeBook')"
+                        />
+                      </b-col>
+                      <b-col v-if="Array.isArray(item.book)">
+                        <b-link @click="unmergeBookItems(index)"
+                          >Unmerge</b-link
+                        >
                       </b-col>
                     </b-row>
                   </div>
@@ -384,8 +457,11 @@
                   <div slot="footer" class="float-left">
                     <b-badge variant="info">{{ book_account }}</b-badge>
                   </div>
-                  <div v-if="item.group">
-                    <!-- <div v-for="(row, index) in item.book" :key="index">
+                  <div v-if="Array.isArray(item.book)">
+                    <div
+                      v-for="(row, index) in flatten(item.book)"
+                      :key="index"
+                    >
                       <b-row>
                         <b-col sm="6">
                           <div class="text-left">
@@ -413,7 +489,7 @@
                         </b-col>
                       </b-row>
                       <hr />
-                    </div> -->
+                    </div>
                   </div>
                   <div v-else>
                     <b-row>
@@ -456,6 +532,48 @@
 <script>
 import ModalMixins from "./Mixins/ModalMixins.js";
 import { mapState, mapActions, mapGetters } from "vuex";
+class BankTemplate {
+  constructor(_Date, Desc, Reference, Entity, Deposit, Withdraw) {
+    this.Date = _Date || null;
+    this.Desc = Desc || "";
+    this.Reference = Reference || "";
+    this.Entity = Entity || "";
+    this.Deposit = Deposit || null;
+    this.Withdraw = Withdraw || null;
+  }
+
+  get bankObj() {
+    let obj = {
+      Date: this.Date,
+      Desc: this.Desc,
+      Reference: this.Reference,
+      Entity: this.Entity,
+      Deposit: this.Deposit,
+      Withdraw: this.Withdraw
+    };
+    return obj;
+  }
+}
+class BookTemplate {
+  constructor(_Date, Desc, Entity, Debit, Credit) {
+    this.Date = _Date || null;
+    this.Desc = Desc || "";
+    this.Entity = Entity || "";
+    this.Debit = Debit || null;
+    this.Credit = Credit || null;
+  }
+
+  get bookObj() {
+    let obj = {
+      Date: this.Date,
+      Desc: this.Desc,
+      Entity: this.Entity,
+      Debit: this.Debit,
+      Credit: this.Credit
+    };
+    return obj;
+  }
+}
 
 export default {
   name: "Unmatch",
@@ -471,7 +589,7 @@ export default {
   computed: {
     ...mapState(["files", "book_account", "bank_accounts", "bank_ref"]),
 
-    ...mapState("Unmatch", ["remaining", "items"]),
+    ...mapState("Unmatch", ["remaining", "items", "mergeBankRecord"]),
 
     ...mapGetters("Unmatch", ["countStackUnmatch", "remainingLength"])
   },
@@ -483,42 +601,89 @@ export default {
     let remainsBook = this.remaining.book;
     let remainsBank = this.remaining.bank;
 
-    // transfer options for Transfer Modal
-    this.getTransferOptions();
-
     // ref options for create.who of Create Modal
     this.getRefOptions(items_bank);
 
-    for (var i = 0, len = this.remainingLength; i < len; i++) {
+    let iterator = 0;
+
+    let bank_template = new BankTemplate();
+    let book_template = new BookTemplate();
+
+    for (var i = 0, len_i = remainsBook.length; i < len_i; i++) {
       let bookIndex = remainsBook[i];
-      let bankIndex = remainsBank[i];
       let obj = {
-        book: items_book[bookIndex] || "null",
-        bank: items_bank[bankIndex] || "null",
-        group: false,
+        book: items_book[bookIndex] || book_template.bookObj,
+        bank: bank_template.bankObj,
         match: false,
-        index: i,
-        metas: {
-          transfer: items_bank[bankIndex].Bank_Entity || "null",
-          create: {
-            who: null,
-            what: items_bank[bankIndex].Reference || "null",
-            why: null
-          },
-          comment: null
-        }
+        index: iterator,
+        comment: ""
       };
+      iterator += 1;
+      this.$store.dispatch("Unmatch/pushItems", obj);
+    }
+
+    for (var j = 0, len_j = remainsBank.length; j < len_j; j++) {
+      let bankIndex = remainsBank[j];
+      let obj = {
+        book: book_template.bookObj,
+        bank: items_bank[bankIndex] || bank_template.bankObj,
+        match: false,
+        index: iterator,
+        comment: ""
+      };
+      iterator += 1;
       this.$store.dispatch("Unmatch/pushItems", obj);
     }
   },
 
   methods: {
+    // check
     ...mapActions("Unmatch", [
       "del", // template
-      "replaceItems", // BaseUnmatch
-      "swapItems", // BaseUnmatch
-      "editBank" // BaseUnmatch
-    ])
+      "createBankItems", // BaseUnmatch
+      "createBookItems",
+      "mergeBankItems",
+      "mergeBookItems",
+      "unmergeBankItems",
+      "unmergeBookItems",
+      "addComment",
+      "swapItems" // BaseUnmatch
+    ]),
+
+    flatten(input) {
+      const stack = [...input];
+      const res = [];
+      while (stack.length) {
+        // pop value from stack
+        const next = stack.pop();
+        if (Array.isArray(next)) {
+          // push back array items, won't modify the original input
+          stack.push(...next);
+        } else {
+          res.push(next);
+        }
+      }
+      //reverse to restore input order
+      return res.reverse();
+    },
+
+    editable(index) {
+      let temp = this.flatten(Object.values(this.mergeBankRecord));
+      return !Array.isArray(this.items[index].bank) && !temp.includes(index)
+        ? true
+        : false;
+    }
+  },
+
+  watch: {
+    items: function() {
+      this.mergeBank_options = this.items.map(each => {
+        return { value: each.index, text: each.index };
+      });
+      this.mergeBook_options = this.items.map(each => {
+        return { value: each.index, text: each.index };
+      });
+    }
   },
 
   filters: {

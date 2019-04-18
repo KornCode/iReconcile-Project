@@ -1,5 +1,3 @@
-import Chrono from "chrono-node";
-
 export default {
   data() {
     return {
@@ -17,50 +15,49 @@ export default {
       swap_options: [],
       // ---------------------
 
-      // ---------------------
-      // MODAL MERGE
-      modalMerge: null,
-      merge: null,
-      show_modalMerge: false,
       mergeList: null,
-      merge_options: [],
+
+      // ---------------------
+      // MODAL MERGE BANK
+      modalMergeBank: null,
+      mergeBank: null,
+      show_modalMergeBank: false,
+      mergeBank_options: [],
       // ---------------------
 
       // ---------------------
-      // MODAL TRANSFER
-      modalTransfer: null,
-      transfer: null,
-      show_modalTransfer: false,
-      transferList: null,
-      transfer_options: [],
+      // MODAL MERGE BOOK
+      modalMergeBook: null,
+      mergeBook: null,
+      show_modalMergeBook: false,
+      mergeBook_options: [],
       // ---------------------
 
       // ---------------------
-      // MODAL CREATE
-      modalCreate: null,
-      create: {
-        who: null,
-        what: null,
-        why: null
-      },
-      show_modalCreate: false,
-      createList: [],
-      // ---------------------
-
-      // ---------------------
-      // MODAL EDIT BANK
-      modalEditBank: null,
-      bank_obj: {
+      // MODAL CREATE BANK
+      modalCreateBank: null,
+      createBank: {
         Date: null,
-        Desc: null,
+        Desc: "",
+        Reference: "",
+        Entity: "",
         Deposit: null,
-        Withdraw: null,
-        Reference: null,
-        Bank_Entity: null,
-        Balance: null
+        Withdraw: null
       },
-      show_modalEditBank: false,
-      // createList: [],
+      show_modalCreateBank: false,
+      // ---------------------
+
+      // ---------------------
+      // MODAL CREATE BOOK
+      modalCreateBook: null,
+      createBook: {
+        Date: null,
+        Desc: "",
+        Entity: "",
+        Deposit: null,
+        Withdraw: null
+      },
+      show_modalCreateBook: false,
       // ---------------------
 
       // ---------------------
@@ -95,116 +92,147 @@ export default {
     },
 
     // ---------------------
-    // MODAL TRANSFER
-    clearTransfer() {
-      this.transfer = this.items[this.modalIndex].metas.transfer;
-    },
-    handleOk_MTransfer(evt) {
-      evt.preventDefault();
-      if (!this.transfer) {
-        alert("Please select one");
-      } else {
-        this.handleSubmit_MTransfer();
-      }
-    },
-    handleSubmit_MTransfer() {
-      this.replaceItems({
-        index: this.modalIndex,
-        type: "transfer",
-        value: this.transfer
-      });
-      this.replaceItems({
-        index: this.modalIndex,
-        type: "entity",
-        value: this.transfer
-      });
-
-      this.$nextTick(() => {
-        this.$refs.modalTransfer.hide();
-      });
-    },
-    handleClick_MTransfer(index) {
-      this.show_modalTransfer = true;
-      this.modalIndex = parseInt(index, 10);
-    },
-    // ---------------------
-
-    // ---------------------
-    // MODAL CREATE
-    clearCreate() {
-      this.create.who = this.items[this.modalIndex].metas.create.who;
-      this.create.what = this.items[this.modalIndex].metas.create.what;
-      this.create.why = this.items[this.modalIndex].metas.create.why;
-    },
-    handleOk_MCreate(evt) {
-      evt.preventDefault();
-      if (
-        !this.create.who &&
-        !this.create.why &&
-        this.create.what === this.items[this.modalIndex].metas.create.what
-      ) {
-        alert("Please submit creation");
-      } else {
-        this.handleSubmit_MCreate();
-      }
-    },
-    handleSubmit_MCreate() {
-      this.replaceItems({
-        index: this.modalIndex,
-        type: "create",
-        value: this.create
-      });
-      this.$nextTick(() => {
-        this.$refs.modalCreate.hide();
-      });
-    },
-    handleClick_MCreate(index) {
-      this.show_modalCreate = true;
-      this.modalIndex = parseInt(index, 10);
-    },
-    // ---------------------
-
-    // ---------------------
-    // MODAL EDIT BANK
-    clearEditBank() {
-      this.bank_obj.Date = new Date(
+    // MODAL CREATE BANK
+    clearCreateBank() {
+      this.createBank.Date = new Date(
         this.items[this.modalIndex].bank.Date
       ).yyyymmdd();
-      this.bank_obj.Desc = this.items[this.modalIndex].bank.Desc;
-      this.bank_obj.Deposit = this.items[this.modalIndex].bank.Deposit;
-      this.bank_obj.Withdraw = this.items[this.modalIndex].bank.Withdraw;
+      this.createBank.Desc = this.items[this.modalIndex].bank.Desc;
+      this.createBank.Reference = this.items[this.modalIndex].bank.Reference;
+      this.createBank.Entity = this.items[this.modalIndex].bank.Entity;
+      this.createBank.Deposit = this.items[this.modalIndex].bank.Deposit;
+      this.createBank.Withdraw = this.items[this.modalIndex].bank.Withdraw;
     },
-    handleOk_MEditBank(evt) {
+    handleOk_MCreateBank(evt) {
       evt.preventDefault();
-      if (!this.bank_obj) {
-        alert("Please submit edit");
+      if (this.createBank.Deposit && this.createBank.Withdraw) {
+        alert("Select either deposit or withdraw");
       } else {
-        this.handleSubmit_MEditBank();
+        this.handleSubmit_MCreateBank();
       }
     },
-    handleSubmit_MEditBank() {
-      let payload = {
-        Date: parseDate(this.bank_obj.Date),
-        Desc: this.bank_obj.Desc,
-        Deposit: this.bank_obj.Deposit,
-        Withdraw: this.bank_obj.Withdraw
-      };
-      payload.index = this.modalIndex;
-      this.editBank(payload);
+    handleSubmit_MCreateBank() {
+      this.createBankItems({
+        index: this.modalIndex,
+        data: {
+          Date: this.createBank.Date,
+          Desc: this.createBank.Desc,
+          Reference: this.createBank.Reference,
+          Entity: this.createBank.Entity,
+          Deposit: this.createBank.Deposit,
+          Withdraw: this.createBank.Withdraw
+        }
+      });
       this.$nextTick(() => {
-        this.$refs.modalEditBank.hide();
+        this.$refs.modalCreateBank.hide();
       });
     },
-    handleClick_MEditBank(index) {
-      this.show_modalEditBank = true;
-      this.modalIndex = parseInt(index, 10);
+    handleClick_MCreateBank(index) {
+      this.show_modalCreateBank = true;
+      this.modalIndex = +index;
+    },
+    // ---------------------
+
+    // ---------------------
+    // MODAL CREATE BOOK
+    clearCreateBook() {
+      this.createBook.Date = new Date(
+        this.items[this.modalIndex].book.Date
+      ).yyyymmdd();
+      this.createBook.Desc = this.items[this.modalIndex].book.Desc;
+      this.createBook.Entity = this.items[this.modalIndex].book.Entity;
+      this.createBook.Debit = this.items[this.modalIndex].book.Debit;
+      this.createBook.Credit = this.items[this.modalIndex].book.Credit;
+    },
+    handleOk_MCreateBook(evt) {
+      evt.preventDefault();
+      if (this.createBook.Debit && this.createBook.Credit) {
+        alert("Select either debit or credit");
+      } else {
+        this.handleSubmit_MCreateBook();
+      }
+    },
+    handleSubmit_MCreateBook() {
+      this.createBookItems({
+        index: this.modalIndex,
+        data: {
+          Date: this.createBook.Date,
+          Desc: this.createBook.Desc,
+          Entity: this.createBook.Entity,
+          Debit: this.createBook.Debit,
+          Credit: this.createBook.Credit
+        }
+      });
+      this.$nextTick(() => {
+        this.$refs.modalCreateBook.hide();
+      });
+    },
+    handleClick_MCreateBook(index) {
+      this.show_modalCreateBook = true;
+      this.modalIndex = +index;
+    },
+    // ---------------------
+
+    // ---------------------
+    // MODAL MERGE BANK
+    clearMergeBank() {
+      this.mergeBank = "";
+    },
+    handleOk_MMergeBank(evt) {
+      evt.preventDefault();
+      if (this.modalIndex == this.mergeBank) {
+        alert("Cannot select same");
+      } else {
+        this.handleSubmit_MMergeBank();
+      }
+    },
+    handleSubmit_MMergeBank() {
+      this.mergeBankItems({
+        indexF: this.modalIndex,
+        indexS: +this.mergeBank
+      });
+      this.$nextTick(() => {
+        this.$refs.modalMergeBank.hide();
+      });
+    },
+    handleClick_MMergeBank(index) {
+      this.show_modalMergeBank = true;
+      this.modalIndex = +index;
+    },
+    // ---------------------
+
+    // ---------------------
+    // MODAL MERGE BOOK
+    clearMergeBook() {
+      this.mergeBook = "";
+    },
+    handleOk_MMergeBook(evt) {
+      evt.preventDefault();
+      if (this.modalIndex == this.mergeBook) {
+        alert("Cannot select same");
+      } else {
+        this.handleSubmit_MMergeBook();
+      }
+    },
+    handleSubmit_MMergeBook() {
+      this.mergeBookItems({
+        indexF: this.modalIndex,
+        indexS: +this.mergeBook
+      });
+      this.$nextTick(() => {
+        this.$refs.modalMergeBook.hide();
+      });
+    },
+    handleClick_MMergeBook(index) {
+      this.show_modalMergeBook = true;
+      this.modalIndex = +index;
     },
     // ---------------------
 
     // ---------------------
     // MODAL COMMENT
     clearComment() {
-      this.comment = this.items[this.modalIndex].metas.comment;
+      this.comment = this.items[this.modalIndex].comment;
     },
     handleOk_MComment(evt) {
       evt.preventDefault();
@@ -215,9 +243,8 @@ export default {
       }
     },
     handleSubmit_MComment() {
-      this.replaceItems({
+      this.addComment({
         index: this.modalIndex,
-        type: "comment",
         value: this.comment
       });
       this.$nextTick(() => {
@@ -226,7 +253,7 @@ export default {
     },
     handleClick_MComment(index) {
       this.show_modalComment = true;
-      this.modalIndex = parseInt(index, 10);
+      this.modalIndex = +index;
     },
     // ---------------------
 
@@ -265,14 +292,6 @@ export default {
     }
   }
 };
-
-function parseDate(date_str) {
-  var date = Chrono.parseDate(date_str).toString();
-  return date
-    .split(" ")
-    .slice(1, 4) // DD Month YYYY
-    .join(" ");
-}
 
 Date.prototype.yyyymmdd = function() {
   var mm = this.getMonth() + 1; // getMonth() is zero-based

@@ -12,14 +12,16 @@ export default {
     items: [],
     stack_match: [],
     paired: null,
-    grouped: null
+    grouped: null,
+
+    mergeBankRecord: {}
   },
   getters: {
     countStacks: state => {
       return state.stack_match.length;
     },
     pairedLength: state => {
-      return state.paired ? Object.values(state.paired).length : 0;
+      return state.items ? Object.values(state.items).length : 0;
     }
   },
   mutations: {
@@ -36,28 +38,12 @@ export default {
       state.stack_match.push(state.items[index]);
       Vue.delete(state.items, index);
     },
-    REPLACE_ITEMS: (state, payload) => {
+    DEL_TO_UNMATCH: (state, index) => {
+      Vue.delete(state.items, index);
+    },
+    ADD_COMMENT: (state, payload) => {
       let newVal = state.items[payload.index];
-      let expr = payload.type;
-      switch (expr) {
-        case "transfer":
-          newVal.metas.transfer = payload.value;
-          break;
-        case "create":
-          newVal.metas.create.who = payload.value.who;
-          newVal.metas.create.what = payload.value.what;
-          newVal.metas.create.why = payload.value.why;
-          break;
-        case "comment":
-          newVal.metas.comment = payload.value;
-          break;
-        case "entity":
-          newVal.bank.Bank_Entity = payload.value;
-          break;
-        default:
-          break;
-      }
-      // newVal.matched = true;
+      newVal.comment = payload.value;
       state.items.splice(payload.index, 1, newVal);
     },
     ADD_PAIRS: (state, pairs) => {
@@ -77,8 +63,11 @@ export default {
     del: (context, index) => {
       context.commit("DEL", index);
     },
-    replaceItems: (context, payload) => {
-      context.commit("REPLACE_ITEMS", payload);
+    delToUnmatch: (context, index) => {
+      context.commit("DEL_TO_UNMATCH", index);
+    },
+    addComment: (context, payload) => {
+      context.commit("ADD_COMMENT", payload);
     },
     addPairs: (context, pairs) => {
       context.commit("ADD_PAIRS", pairs);

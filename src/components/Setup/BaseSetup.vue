@@ -427,7 +427,7 @@ export default {
 };
 
 function str_to_number(number) {
-  return number && +(number.replace(",", ""));
+  return number && +number.replace(",", "");
 }
 
 function parseDate(date_str) {

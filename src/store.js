@@ -32,7 +32,10 @@ export default new Vuex.Store({
   getters: {
     bookBalance: state => {
       return state.files
-        ? state.files.book.map(bal => bal["Balance"]).reduce(add)
+        ? state.files.book
+            .map(bal => bal["Balance"])
+            .filter(each => Number(each))
+            .reduce(add)
         : 0;
     },
     bankBalance: state => {
@@ -40,6 +43,7 @@ export default new Vuex.Store({
         ? state.files.bank
             .flat()
             .map(bal => bal["Balance"])
+            .filter(each => Number(each))
             .reduce(add)
         : 0;
     }

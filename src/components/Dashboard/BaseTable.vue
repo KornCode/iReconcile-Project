@@ -88,8 +88,6 @@ export default {
         "Reference",
         "Spent",
         "Received",
-        "Who",
-        "Why",
         "Comment",
         "undo"
       ],
@@ -123,8 +121,6 @@ export default {
               "Reference",
               "Spent",
               "Received",
-              "Who",
-              "Why",
               "Comment"
             ]
           ],
@@ -151,6 +147,33 @@ export default {
     rowClass(item) {
       if (!item) return;
       if (item.status === "grouped") return "table-success";
+    },
+
+    flatten(input) {
+      const stack = [...input];
+      const res = [];
+      while (stack.length) {
+        // pop value from stack
+        const next = stack.pop();
+        if (Array.isArray(next)) {
+          // push back array items, won't modify the original input
+          stack.push(...next);
+        } else {
+          res.push(next);
+        }
+      }
+      //reverse to restore input order
+      return res.reverse();
+    },
+
+    single_or_array(input, key, reduce = false) {
+      let result = Array.isArray(input)
+        ? this.flatten(input).map(each => each[key])
+        : input[key];
+      if (reduce) {
+        return Array.isArray(input) ? result.reduce((a, b) => a + b) : result;
+      }
+      return result;
     }
   },
 
@@ -166,36 +189,33 @@ export default {
     list_items: function() {
       let stack =
         this.selected === "Matched" ? this.stack_match : this.stack_unmatch;
-      let temp = [];
-      const add = (a, b) => a + b;
+      let result = [];
       for (var key in stack) {
         let obj = {
           index: stack[key].index,
-          Date: stack[key].bank.Date,
           Payee: stack[key].book.Desc,
-          Who: stack[key].metas.create.who,
-          Why: stack[key].metas.create.why,
-          Comment: stack[key].metas.comment
+          Comment: stack[key].comment
         };
 
         if (Array.isArray(stack[key].book) || Array.isArray(stack[key].bank)) {
           obj.status = "grouped";
-          obj.Date = stack[key].book.map(each => each.Date);
-          obj.Payee = stack[key].book.map(each => each.Desc);
-          obj.Spent = stack[key].book.map(each => each.Debit).reduce(add);
-          obj.Received = stack[key].book.map(each => each.Credit).reduce(add);
-          obj.Bank = stack[key].bank.map(each => each.Bank_Entity);
-          obj.Reference = stack[key].bank.map(each => each.Reference);
+          obj.Date = this.single_or_array(stack[key].book, "Date");
+          obj.Payee = this.single_or_array(stack[key].book, "Desc");
+          obj.Spent = this.single_or_array(stack[key].book, "Debit", true);
+          obj.Received = this.single_or_array(stack[key].book, "Credit", true);
+          obj.Bank = this.single_or_array(stack[key].bank, "Bank_Entity");
+          obj.Reference = this.single_or_array(stack[key].bank, "Reference");
         } else {
+          obj.Date = stack[key].bank.Date;
           obj.Spent = stack[key].book.Debit;
           obj.Received = stack[key].book.Credit;
           obj.Bank = stack[key].bank.Bank_Entity;
-          obj.Reference = stack[key].metas.create.what;
+          obj.Reference = stack[key].bank.Reference;
         }
 
-        temp.push(obj);
+        result.push(obj);
       }
-      return temp;
+      return result;
     }
   }
 };

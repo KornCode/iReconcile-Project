@@ -67,7 +67,7 @@
       >
         <div v-text="$ml.get('summaryBookBalance')" />
         <b-badge variant="warning" pill>{{
-          bookBalance | numFormatting
+          (bookBalance + editBookBalance) | numFormatting
         }}</b-badge>
       </b-list-group-item>
       <b-list-group-item
@@ -76,7 +76,7 @@
       >
         <div v-text="$ml.get('summaryBankBalance')" />
         <b-badge variant="warning" pill>{{
-          (bankBalance + editBalance) | numFormatting
+          (bankBalance + editBankBalance) | numFormatting
         }}</b-badge>
       </b-list-group-item>
     </b-list-group>
@@ -89,12 +89,8 @@ import { mapState, mapGetters } from "vuex";
 export default {
   name: "Summary",
 
-  data() {
-    return {};
-  },
-
   computed: {
-    ...mapState("Unmatch", ["editBalance"]),
+    ...mapState("Unmatch", ["editBankBalance", "editBookBalance"]),
     ...mapGetters(["bookBalance", "bankBalance"]),
     ...mapGetters("Match", ["countStacks", "pairedLength"]),
     ...mapGetters("Unmatch", ["countStackUnmatch", "remainingLength"])

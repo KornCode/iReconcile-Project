@@ -88,6 +88,17 @@ export default new MLCreate({
       matchColBank: "Review your bank statement lines...",
       matchColBook: "...then match with your transactions",
 
+      matchModalCreateBank: "Create/Edit",
+      matchModalCreateBankHeader: "Submit",
+
+      matchModalMergeBank: "Merge",
+      matchModalMergeBankHeader: "Submit",
+      matchModalMergeBook: "Merge",
+      matchModalMergeBookHeader: "Submit",
+
+      matchModalCreateBook: "Create/Edit",
+      matchModalCreateBookHeader: "Submit",
+
       matchModalTransfer: "Transfer",
       matchModalTransferHeader: "Submit transfer",
 
@@ -100,8 +111,8 @@ export default new MLCreate({
       matchModalSwap: "Swap",
       matchModalSwapHeader: "Submit swap",
 
-      matchModalEditBank: "Edit",
-      matchModalEditBankHeader: "Submit edit",
+      matchModalEditBank: "Create/Edit",
+      matchModalEditBankHeader: "Submit",
 
       matchSpent: "Spent",
       matchReceived: "Received",
@@ -195,6 +206,17 @@ export default new MLCreate({
 
       matchColBank: "ตรวจดูรายการของธนาคาร...",
       matchColBook: "...เพื่อกระทบยอดกับการการของบริษัท",
+
+      matchModalCreateBank: "สร้าง/แก้ไข",
+      matchModalCreateBankHeader: "สร้างบัญชี",
+
+      matchModalCreateBook: "สร้าง/แก้ไข",
+      matchModalCreateBookHeader: "สร้างบัญชี",
+
+      matchModalMergeBank: "รวม",
+      matchModalMergeBankHeader: "ยืนยัน",
+      matchModalMergeBook: "รวม",
+      matchModalMergeBookHeader: "ยืนยัน",
 
       matchModalTransfer: "บัญชีบริษัท",
       matchModalTransferHeader: "แก้ไขบัญชีบริษัท",
