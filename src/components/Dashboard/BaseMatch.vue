@@ -126,7 +126,7 @@
                         <b-link
                           v-if="allowMoveUnmatch(index)"
                           @click="_moveToUnmatch(index)"
-                          >Move</b-link
+                          >Move to unmatch</b-link
                         >
                       </b-col>
                     </b-row>
@@ -313,6 +313,48 @@
 <script>
 import ModalMixins from "./Mixins/ModalMixins.js";
 import { mapState, mapActions, mapGetters } from "vuex";
+class BankTemplate {
+  constructor(_Date, Desc, Reference, Entity, Deposit, Withdraw) {
+    this.Date = _Date || null;
+    this.Desc = Desc || "";
+    this.Reference = Reference || "";
+    this.Entity = Entity || "";
+    this.Deposit = Deposit || null;
+    this.Withdraw = Withdraw || null;
+  }
+
+  get bankObj() {
+    let obj = {
+      Date: this.Date,
+      Desc: this.Desc,
+      Reference: this.Reference,
+      Entity: this.Entity,
+      Deposit: this.Deposit,
+      Withdraw: this.Withdraw
+    };
+    return obj;
+  }
+}
+class BookTemplate {
+  constructor(_Date, Desc, Entity, Debit, Credit) {
+    this.Date = _Date || null;
+    this.Desc = Desc || "";
+    this.Entity = Entity || "";
+    this.Debit = Debit || null;
+    this.Credit = Credit || null;
+  }
+
+  get bookObj() {
+    let obj = {
+      Date: this.Date,
+      Desc: this.Desc,
+      Entity: this.Entity,
+      Debit: this.Debit,
+      Credit: this.Credit
+    };
+    return obj;
+  }
+}
 
 export default {
   name: "Match",
@@ -332,7 +374,6 @@ export default {
   },
 
   created() {
-    //check
     let paired = this.paired;
     let grouped = this.grouped;
     let items_book = this.files.book;
@@ -340,13 +381,15 @@ export default {
 
     let iterator = 0;
 
+    let bank_template = new BankTemplate();
+    let book_template = new BookTemplate();
+
     // iteration of object paired
     for (var key_i in paired) {
       let value = paired[key_i];
       let obj = {
         book: items_book[value],
         bank: items_bank[key_i],
-        // group: false,
         index: iterator,
         comment: ""
       };
@@ -360,8 +403,8 @@ export default {
       let bankIndex = groupVal[key_j].bank;
 
       let obj = {
-        book: null,
-        bank: null,
+        book: book_template.bookObj,
+        bank: bank_template.bankObj,
         index: iterator,
         comment: "",
         mergeable: true
@@ -372,7 +415,6 @@ export default {
         bookIndex.forEach(index => {
           obj.book.push(items_book[index]);
         });
-        // obj.book.group = true;
       } else {
         obj.book = items_book[bookIndex];
       }
@@ -382,7 +424,6 @@ export default {
         bankIndex.forEach(index => {
           obj.bank.push(items_bank[index]);
         });
-        // obj.bank.group = true;
       } else {
         obj.bank = items_bank[bankIndex];
       }
@@ -428,7 +469,7 @@ export default {
     // 12345 to 12,345
     numFormatting: function(number) {
       if (number) {
-        //skip null
+        number = +number;
         return number.toFixed(2).toLocaleString("en");
       }
     }

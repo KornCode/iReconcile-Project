@@ -678,10 +678,10 @@ export default {
   watch: {
     items: function() {
       this.mergeBank_options = this.items.map(each => {
-        return { value: each.index, text: each.index };
+        return { value: each.index, text: `Index ${each.index}` };
       });
       this.mergeBook_options = this.items.map(each => {
-        return { value: each.index, text: each.index };
+        return { value: each.index, text: `Index ${each.index}` };
       });
     }
   },
@@ -690,7 +690,8 @@ export default {
     // ex 12345 to 12,345
     numFormatting: function(number) {
       if (number) {
-        return number.toLocaleString("en");
+        number = +number;
+        return number.toFixed(2).toLocaleString("en");
       }
     }
   }

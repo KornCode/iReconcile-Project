@@ -2,7 +2,7 @@ import Vue from "vue";
 
 const add = (a, b) => a + b;
 const sort_index = (a, b) => a.index - b.index;
-const index_ObjInArray = (array, index) => {
+const real_index_of_ele = (array, index) => {
   let _select_obj = array.find(obj => obj.index === index);
   return array.indexOf(_select_obj);
 };
@@ -128,7 +128,7 @@ export default {
       state.items.push(obj);
     },
     UNDO_UNMATCH: (state, index) => {
-      let select_obj = index_ObjInArray(state.stack_unmatch, index);
+      let select_obj = real_index_of_ele(state.stack_unmatch, index);
       state.items.push(state.stack_unmatch[select_obj]);
       Vue.delete(state.stack_unmatch, select_obj);
       state.items.sort(sort_index);

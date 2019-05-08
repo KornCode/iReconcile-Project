@@ -379,7 +379,7 @@ export default {
       this.$http({
         method: "post",
         url: "http://127.0.0.1:5000/main/",
-        // url: "https://3b7915af.ngrok.io/main/",
+        // url: "https://7fdf3593.ngrok.io/main/",
         data: formData,
         headers: { "Content-Type": "multipart/form-data" }
       })

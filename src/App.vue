@@ -44,11 +44,11 @@
       </b-navbar>
     </div>
 
-    <vue-particles
+    <!-- <vue-particles
       color="#6F6767"
       :particleOpacity="0.2"
       class="particles-js"
-    ></vue-particles>
+    ></vue-particles> -->
 
     <div class="py-5">
       <router-view />

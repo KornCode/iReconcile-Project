@@ -178,7 +178,7 @@ export default {
   },
 
   mounted() {
-    // this.detectPageReload();
+    this.detectPageReload();
   },
 
   computed: {
@@ -190,28 +190,30 @@ export default {
       let stack =
         this.selected === "Matched" ? this.stack_match : this.stack_unmatch;
       let result = [];
+
       for (var key in stack) {
-        let obj = {
-          index: stack[key].index,
-          Payee: stack[key].book.Desc,
-          Comment: stack[key].comment
-        };
+        let obj = {};
+
+        obj.index = stack[key].index;
 
         if (Array.isArray(stack[key].book) || Array.isArray(stack[key].bank)) {
           obj.status = "grouped";
           obj.Date = this.single_or_array(stack[key].book, "Date");
           obj.Payee = this.single_or_array(stack[key].book, "Desc");
-          obj.Spent = this.single_or_array(stack[key].book, "Debit", true);
-          obj.Received = this.single_or_array(stack[key].book, "Credit", true);
           obj.Bank = this.single_or_array(stack[key].bank, "Bank_Entity");
           obj.Reference = this.single_or_array(stack[key].bank, "Reference");
+          obj.Spent = this.single_or_array(stack[key].book, "Debit", true);
+          obj.Received = this.single_or_array(stack[key].book, "Credit", true);
         } else {
           obj.Date = stack[key].bank.Date;
-          obj.Spent = stack[key].book.Debit;
-          obj.Received = stack[key].book.Credit;
+          obj.Payee = stack[key].book.Desc;
           obj.Bank = stack[key].bank.Bank_Entity;
           obj.Reference = stack[key].bank.Reference;
+          obj.Spent = stack[key].book.Debit;
+          obj.Received = stack[key].book.Credit;
         }
+
+        obj.Comment = stack[key].comment;
 
         result.push(obj);
       }
