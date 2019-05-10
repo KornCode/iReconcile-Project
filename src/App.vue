@@ -9,17 +9,26 @@
         <b-collapse is-nav id="nav_collapse">
           <b-navbar-nav>
             <div id="nav">
-              <b-link class="pr-3" :to="'/'" v-text="$ml.get('navHome')" />
-              <b-link
-                class="pr-3"
-                :to="'/about'"
-                v-text="$ml.get('navAbout')"
-              />
-              <b-link
-                class="pr-3"
-                :to="'/contact'"
-                v-text="$ml.get('navContact')"
-              />
+              <div v-if="$store.state.show_nav_dashboard" key="nav">
+                <b-link
+                  class="pr-3"
+                  :to="'/dashboard'"
+                  v-text="$ml.get('navDashboard')"
+                />
+              </div>
+              <div v-else key="nav">
+                <b-link class="pr-3" :to="'/'" v-text="$ml.get('navHome')" />
+                <b-link
+                  class="pr-3"
+                  :to="'/about'"
+                  v-text="$ml.get('navAbout')"
+                />
+                <b-link
+                  class="pr-3"
+                  :to="'/contact'"
+                  v-text="$ml.get('navContact')"
+                />
+              </div>
             </div>
           </b-navbar-nav>
 
@@ -35,11 +44,11 @@
       </b-navbar>
     </div>
 
-    <vue-particles
+    <!-- <vue-particles
       color="#6F6767"
-      :particleOpacity="0.3"
+      :particleOpacity="0.2"
       class="particles-js"
-    ></vue-particles>
+    ></vue-particles> -->
 
     <div class="py-5">
       <router-view />
@@ -50,7 +59,8 @@
 <style>
 @import "../node_modules/bootstrap/dist/css/bootstrap.css";
 @import "../node_modules/bootstrap-vue/dist/bootstrap-vue.css";
-@import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css";
+@import "../node_modules/animate.css/animate.min.css";
+/* @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css"; */
 
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;

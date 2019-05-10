@@ -4,45 +4,56 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 const debug = process.env.NODE_ENV !== "production";
+const add = (a, b) => a + b;
 
 // const timerDateFindLodash = new Date();
 // console.log('lodash time', new Date() - timerDateFindLodash);
 
+import Unmatch from "./modules/Unmatch";
+import Match from "./modules/Match";
+
 export default new Vuex.Store({
   strict: debug,
+  modules: {
+    Unmatch,
+    Match
+  },
   state: {
     files: null,
-    paired: null,
+    raw_files: null,
     matched: [],
-    book_account: null,
+    book_account: [],
     bank_accounts: [],
 
-    stack: [],
     bank_ref: null,
-    items: []
+
+    show_nav_dashboard: false
   },
   getters: {
-    countStacks: state => {
-      return state.stack.length;
-    },
     bookBalance: state => {
-      const add = (a, b) => a + b;
-      return state.files.book.map(bal => bal["Balance"]).reduce(add);
+      return state.files
+        ? state.files.book
+            .map(bal => bal["Balance"])
+            .filter(each => Number(each))
+            .reduce(add)
+        : 0;
     },
     bankBalance: state => {
-      const add = (a, b) => a + b;
-      return state.files.bank
-        .flat()
-        .map(bal => bal["Balance"])
-        .reduce(add);
+      return state.files
+        ? state.files.bank
+            .flat()
+            .map(bal => bal["Balance"])
+            .filter(each => Number(each))
+            .reduce(add)
+        : 0;
     }
   },
   mutations: {
+    SHOW_NAV_DASHBOARD: (state, cond) => {
+      state.show_nav_dashboard = cond;
+    },
     ADD_FILES: (state, file) => {
       state.files = file;
-    },
-    ADD_PAIRS: (state, pairs) => {
-      state.paired = pairs;
     },
     ADD_BOOK_ACC: (state, account) => {
       state.book_account = account;
@@ -53,50 +64,16 @@ export default new Vuex.Store({
     ADD_BANK_REF: (state, ref) => {
       state.bank_ref = ref;
     },
-    PUSH_ITEMS: (state, obj) => {
-      state.items.push(obj);
-    },
-    DEL: (state, index) => {
-      state.stack.push(state.items[index]);
-      state.items.splice(index, 1);
-    },
-    UNDO: state => {
-      state.items.push(state.stack.pop());
-      state.items.sort(function(a, b) {
-        return a.index - b.index;
-      });
-    },
-    REPLACE_ITEMS: (state, payload) => {
-      let newVal = state.items[payload.index];
-      let expr = payload.type;
-      switch (expr) {
-        case "transfer":
-          newVal.metas.transfer = payload.value;
-          break;
-        case "create":
-          newVal.metas.create.who = payload.value.who;
-          newVal.metas.create.what = payload.value.what;
-          newVal.metas.create.why = payload.value.why;
-          break;
-        case "comment":
-          newVal.metas.comment = payload.value;
-          break;
-        case "entity":
-          newVal.bank.Bank_Entity = payload.value;
-          break;
-        default:
-          break;
-      }
-      newVal.matched = true;
-      state.items.splice(payload.index, 1, newVal);
+    ADD_RAW_FILES: (state, files) => {
+      state.raw_files = files;
     }
   },
   actions: {
+    showNavDashboard: (context, cond) => {
+      context.commit("SHOW_NAV_DASHBOARD", cond);
+    },
     addFiles: (context, file) => {
       context.commit("ADD_FILES", file);
-    },
-    addPairs: (context, pairs) => {
-      context.commit("ADD_PAIRS", pairs);
     },
     addBookAcc: (context, account) => {
       context.commit("ADD_BOOK_ACC", account);
@@ -107,17 +84,8 @@ export default new Vuex.Store({
     addBankRef: (context, ref) => {
       context.commit("ADD_BANK_REF", ref);
     },
-    pushItems: (context, obj) => {
-      context.commit("PUSH_ITEMS", obj);
-    },
-    del: (context, index) => {
-      context.commit("DEL", index);
-    },
-    undo: context => {
-      context.commit("UNDO");
-    },
-    replaceItems: (context, payload) => {
-      context.commit("REPLACE_ITEMS", payload);
+    addRawFiles: (context, files) => {
+      context.commit("ADD_RAW_FILES", files);
     }
   }
 });

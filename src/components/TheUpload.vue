@@ -1,14 +1,18 @@
 <template>
-  <div class="upload page">
-    <div id="align_center" class="w-50">
-      <transition leave-active-class="animated bounceOutDown">
+  <div class="upload">
+    <div id="align_center" class="w-50 center-xy">
+      <transition leave-active-class="animated fadeOutUpBig">
         <div v-show="show_upload">
           <b-card-group deck>
             <b-card
-              class="shadow-sm"
+              class="overflow-hidden shadow-sm"
               border-variant="dark"
               header-border-variant="dark"
               header-tag="header"
+              header-bg-variant="dark"
+              header-text-variant="light"
+              body-bg-variant="light"
+              style="border-radius: 30px;"
             >
               <h3
                 slot="header"
@@ -16,63 +20,65 @@
                 v-text="$ml.get('uploadHeader')"
               ></h3>
 
-              <b-row class="mb-4 justify-content-md-center">
-                <b-col md="10">
-                  <b-form-file
-                    accept=".csv"
-                    v-model="file_book"
-                    :state="Boolean(file_book)"
-                    ref="file_book"
-                    placeholder="Ledger statement..."
-                  />
-                  <b-tooltip
-                    :target="() => $refs.file_book"
-                    placement="rightbottom"
-                    title="Support single file"
-                  />
-                </b-col>
-              </b-row>
-
-              <b-row class="mb-4 justify-content-md-center">
-                <b-col md="10">
-                  <b-form-file
-                    accept=".csv"
-                    v-model="file_bank"
-                    :state="Boolean(file_bank)"
-                    :multiple="Boolean(true)"
-                    ref="file_bank"
-                    placeholder="Bank statements..."
-                  />
-                  <b-tooltip
-                    :target="() => $refs.file_bank"
-                    placement="rightbottom"
-                    title="Support multiple files"
-                  />
-                  <div class="mt-3">
-                    <font-awesome-icon icon="file-csv" />
-                    Bank files: {{ file_bank && file_bank.length }}
-                  </div>
-                </b-col>
-              </b-row>
-
-              <b-row class="mb-2 justify-content-md-center">
-                <b-button-toolbar>
-                  <b-button-group class="mx-1">
-                    <b-button
-                      @click="clearBook"
-                      variant="outline-secondary"
-                      v-text="$ml.get('uploadClearLedger')"
+              <b-card-body>
+                <b-row class="mb-4 justify-content-md-center">
+                  <b-col md="10">
+                    <b-form-file
+                      accept=".csv"
+                      v-model="file_book"
+                      :state="Boolean(file_book)"
+                      ref="file_book"
+                      placeholder="Ledger statement..."
                     />
-                  </b-button-group>
-                  <b-button-group class="mx-1">
-                    <b-button
-                      @click="clearBank"
-                      variant="outline-secondary"
-                      v-text="$ml.get('uploadClearBanks')"
+                    <b-tooltip
+                      :target="() => $refs.file_book"
+                      placement="rightbottom"
+                      title="Support single file"
                     />
-                  </b-button-group>
-                </b-button-toolbar>
-              </b-row>
+                  </b-col>
+                </b-row>
+
+                <b-row class="mb-4 justify-content-md-center">
+                  <b-col md="10">
+                    <b-form-file
+                      accept=".csv"
+                      v-model="file_bank"
+                      :state="Boolean(file_bank)"
+                      :multiple="Boolean(true)"
+                      ref="file_bank"
+                      placeholder="Bank statements..."
+                    />
+                    <b-tooltip
+                      :target="() => $refs.file_bank"
+                      placement="rightbottom"
+                      title="Support multiple files"
+                    />
+                    <div class="mt-3">
+                      <font-awesome-icon icon="file-csv" />
+                      Bank files: {{ file_bank && file_bank.length }}
+                    </div>
+                  </b-col>
+                </b-row>
+
+                <b-row class="mb-2 justify-content-md-center">
+                  <b-button-toolbar>
+                    <b-button-group class="mx-1">
+                      <b-button
+                        @click="clearBook"
+                        variant="outline-secondary"
+                        v-text="$ml.get('uploadClearLedger')"
+                      />
+                    </b-button-group>
+                    <b-button-group class="mx-1">
+                      <b-button
+                        @click="clearBank"
+                        variant="outline-secondary"
+                        v-text="$ml.get('uploadClearBanks')"
+                      />
+                    </b-button-group>
+                  </b-button-toolbar>
+                </b-row>
+              </b-card-body>
 
               <div slot="footer" align="center">
                 <b-button
@@ -80,6 +86,7 @@
                   variant="success"
                   class="btn-lg btn-block"
                   v-text="$ml.get('uploadReview')"
+                  style="border-radius: 30px;"
                 />
               </div>
             </b-card>
@@ -90,10 +97,7 @@
       </transition>
     </div>
 
-    <transition
-      enter-active-class="animated slideInUp delay-1s"
-      leave-active-class="animated zoomOut"
-    >
+    <transition enter-active-class="animated fadeInUpBig">
       <Setup
         v-if="show_setupfile"
         :files="files"
@@ -110,9 +114,8 @@ import fuzz from "fuzzball";
 import Papa from "papaparse";
 
 import Setup from "@/components/Setup/BaseSetup.vue";
+import { MyFunctions } from "@/MyFunctions.js";
 import { mapActions } from "vuex";
-
-("use strict");
 
 export default {
   name: "Upload",
@@ -123,12 +126,25 @@ export default {
 
   data() {
     return {
+      /*****
+       * Form inputs
+       */
       file_book: null,
       file_bank: null,
+
+      /*****
+       * show and hide components
+       */
       show_upload: true,
       show_setupfile: false,
 
-      files: { book: null, bank: null },
+      /*****
+       * Data sending to props
+       */
+      files: {
+        book: null,
+        bank: null
+      },
       fields: {
         book: {
           date: null,
@@ -146,7 +162,10 @@ export default {
           balance: []
         }
       },
-      columns: { book: null, bank: [] },
+      columns: {
+        book: null,
+        bank: []
+      },
       file_names: {
         book: null,
         bank: null
@@ -155,7 +174,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(["addBookAcc", "addBankAcc"]),
+    ...mapActions(["addRawFiles"]),
 
     submitFiles() {
       if (this.file_book && this.file_bank) {
@@ -185,7 +204,7 @@ export default {
         };
 
         let parseAllPromise = async () => {
-          let [err, res] = await handle(
+          let [err, res] = await MyFunctions.handle(
             Promise.all([
               parseBookPromise(this.file_book),
               parseBankPromise(this.file_bank)
@@ -194,6 +213,7 @@ export default {
           if (err || !res) {
             throw new Error("An error parsing document.");
           }
+
           return { parsedBook: res[0], parsedBank: res[1] };
         };
 
@@ -205,11 +225,10 @@ export default {
             this.selectColumnToken();
           })
           .then(() => {
-            this.toggleChildComponent();
+            this.toggleSetupComponent();
           })
           .catch(err => {
             alert(err);
-            // reload this page after clicked 'OK'
             location.reload();
           });
       } else {
@@ -218,7 +237,7 @@ export default {
     },
 
     retrieveData(payload) {
-      this.checkNumRows(payload.parsedBook, payload.parsedBank);
+      this.addRawFiles({ book: payload.parsedBook, banks: payload.parsedBank });
 
       // Prop data (files) -------------
       this.files.book = payload.parsedBook;
@@ -230,49 +249,33 @@ export default {
       this.columns.bank = payload.parsedBank.map(o => Object.keys(o.data[0]));
       // -------------------------------
 
-      // Prop data (columns) -----------
+      // Prop data (file_names) --------
       this.file_names.book = getAccName(this.file_book);
       this.file_names.bank = this.file_bank.map(acc => getAccName(acc));
       // -------------------------------
     },
 
-    checkNumRows(book, bank) {
-      let bookLength = book.data.length;
-      let bankLength = 0;
-
-      bank.forEach(obj => {
-        bankLength += obj.data.length;
-      });
-
-      if (bookLength != bankLength) {
-        throw new RangeError("Ledger rows and Bank rows is not equal.");
-      }
-    },
-
     selectColumnToken() {
-      let token_book = new TokenSetRatio(this.columns.book);
-      // Prop data (fields.book) --------------------------
+      let token_book = new BookColumns(this.columns.book);
+
       this.fields.book.date = token_book.selectDate;
       this.fields.book.desc = token_book.selectDesc;
       this.fields.book.debit = token_book.selectDebit;
       this.fields.book.credit = token_book.selectCredit;
       this.fields.book.balance = token_book.selectBalance;
-      // --------------------------------------------------
 
-      this.columns.bank.forEach(each_bank => {
-        let token_bank = new TokenSetRatio(each_bank);
-        // Prop data (fields.bank) --------------------------
+      for (var i = 0, len = this.columns.bank.length; i < len; i++) {
+        let token_bank = new BankColumns(this.columns.bank[i]);
         this.fields.bank.date.push(token_bank.selectDate);
         this.fields.bank.desc.push(token_bank.selectDesc);
         this.fields.bank.ref.push(token_bank.selectReference);
         this.fields.bank.deposit.push(token_bank.selectDeposit);
         this.fields.bank.withdraw.push(token_bank.selectWithdraw);
         this.fields.bank.balance.push(token_bank.selectBalance);
-        // --------------------------------------------------
-      });
+      }
     },
 
-    toggleChildComponent() {
+    toggleSetupComponent() {
       this.show_upload = false;
       this.show_setupfile = true;
     },
@@ -286,34 +289,16 @@ export default {
   }
 };
 
-const handle = promise =>
-  promise.then(res => [null, res]).catch(err => [err, null]);
-
 class TokenSetRatio {
   constructor(columns) {
     this.columns = columns;
   }
 
-  get selectDate() {
-    return this.token_set_ratio("Date");
-  }
   get selectDesc() {
     return this.token_set_ratio("Description");
   }
-  get selectDebit() {
-    return this.token_set_ratio("Debit");
-  }
-  get selectCredit() {
-    return this.token_set_ratio("Credit");
-  }
-  get selectDeposit() {
-    return this.token_set_ratio("Deposit");
-  }
-  get selectWithdraw() {
-    return this.token_set_ratio("Withdraw");
-  }
-  get selectReference() {
-    return this.token_set_ratio("Reference");
+  get selectDate() {
+    return this.token_set_ratio("Date");
   }
   get selectBalance() {
     return this.token_set_ratio("Balance");
@@ -324,6 +309,35 @@ class TokenSetRatio {
       return fuzz.token_set_ratio(o, select_col) > 80 ? true : false;
     });
     return result;
+  }
+}
+
+class BookColumns extends TokenSetRatio {
+  constructor(columns) {
+    super(columns);
+  }
+
+  get selectDebit() {
+    return this.token_set_ratio("Debit");
+  }
+  get selectCredit() {
+    return this.token_set_ratio("Credit");
+  }
+}
+
+class BankColumns extends TokenSetRatio {
+  constructor(columns) {
+    super(columns);
+  }
+
+  get selectDeposit() {
+    return this.token_set_ratio("Deposit");
+  }
+  get selectWithdraw() {
+    return this.token_set_ratio("Withdraw");
+  }
+  get selectReference() {
+    return this.token_set_ratio("Reference");
   }
 }
 
@@ -339,5 +353,14 @@ function getAccName(account) {
 <style scoped>
 #align_center {
   margin: 0 auto;
+}
+
+.center-xy {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 </style>

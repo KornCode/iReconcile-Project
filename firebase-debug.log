@@ -1,0 +1,43 @@
+[debug] [2019-05-02T13:16:03.843Z] ----------------------------------------------------------------------
+[debug] [2019-05-02T13:16:03.845Z] Command:       /usr/local/Cellar/node/12.1.0/bin/node /usr/local/bin/firebase init
+[debug] [2019-05-02T13:16:03.845Z] CLI Version:   6.7.2
+[debug] [2019-05-02T13:16:03.845Z] Platform:      darwin
+[debug] [2019-05-02T13:16:03.845Z] Node Version:  v12.1.0
+[debug] [2019-05-02T13:16:03.846Z] Time:          Thu May 02 2019 20:16:03 GMT+0700 (Indochina Time)
+[debug] [2019-05-02T13:16:03.846Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-05-02T13:16:03.852Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-05-02T13:16:03.852Z] > authorizing via signed-in user
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/korn/Desktop/Project/client
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2019-05-02T13:16:08.992Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects?page_size=100  
+ 
+[debug] [2019-05-02T13:16:09.720Z] <<< HTTP RESPONSE 200
+[info] i  Using project vue-serverless-62d29 (vue-serverless)
+[info] 
+=== Hosting Setup
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 
+[info] ✔  Wrote public/404.html
+[debug] [2019-05-02T13:17:18.259Z] >>> HTTP REQUEST GET https://www.gstatic.com/firebasejs/releases.json  
+ 
+[debug] [2019-05-02T13:17:18.424Z] <<< HTTP RESPONSE 200

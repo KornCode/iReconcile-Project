@@ -14,15 +14,15 @@
               >Failed - Try again.</b-alert
             >
           </div>
-          <b-card bg-variant="light">
+          <b-card bg-variant="light" style="border-radius: 20px">
             <b-form @submit="onSubmit" @reset="onReset" v-if="show">
               <b-form-group
                 label-cols-lg="3"
-                label="Contact"
                 label-size="lg"
                 label-class="font-weight-bold pt-0"
                 class="mb-0"
               >
+                <div slot="label"><h2>Contacts</h2></div>
                 <b-form-group
                   id="email"
                   label-cols-sm="3"
@@ -116,9 +116,10 @@
           </b-card>
         </b-col>
         <b-col sm-4>
-          <b-list-group>
+          <b-list-group class="overflow-hidden">
             <b-list-group-item
               class="d-flex justify-content-between align-items-center"
+              style="border-radius: 20px 20px 0px 0px"
             >
               <!-- <font-awesome-icon icon="phone" /> -->
               <div v-text="$ml.get('contactPhone')" />
@@ -127,6 +128,7 @@
 
             <b-list-group-item
               class="d-flex justify-content-between align-items-center"
+              style="border-radius: 0px 0px 20px 20px"
             >
               <div v-text="$ml.get('contactMail')" />
               <b-badge variant="primary" pill>irecon@gmail.co.th</b-badge>
@@ -139,8 +141,6 @@
 </template>
 
 <script>
-"use strict";
-
 export default {
   name: "Contact",
 
@@ -153,7 +153,12 @@ export default {
         category: null,
         checked: []
       },
-      categories: [{ text: "Select One", value: null }, "A", "B", "C", "D"],
+      categories: [
+        { text: "Select One", value: null },
+        "Bug report",
+        "Compliment",
+        "Other"
+      ],
       show: true,
 
       show_spinner: false,
@@ -166,6 +171,7 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
 
+      this.show_success = false;
       this.show_failed = false;
       this.show_spinner = true;
 

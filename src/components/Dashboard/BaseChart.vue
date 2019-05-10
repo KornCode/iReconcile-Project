@@ -1,7 +1,12 @@
 <template>
   <div class="chart">
     <b-card-group deck>
-      <b-card header=" " header-tag="header">
+      <b-card
+        header=" "
+        header-tag="header"
+        class="overflow-hidden"
+        style="border-radius: 30px"
+      >
         <div slot="header" class="float-left">
           <h2>Chart</h2>
         </div>
@@ -12,9 +17,9 @@
               split
               split-variant="outline-primary"
               variant="primary"
-              text="Dropdown with divider"
             >
-              <b-dropdown-header>Dropdown header</b-dropdown-header>
+              <div slot="text">{{ select_bank }}</div>
+              <b-dropdown-header>Bank Accounts</b-dropdown-header>
               <div v-for="(bank, index) in banks_index" :key="index">
                 <b-dropdown-item-button @click="selectChart(bank)">{{
                   bank
@@ -37,8 +42,6 @@
 import ChartMixins from "./Mixins/ChartMixins.js";
 import { mapState } from "vuex";
 
-("use strict");
-
 export default {
   name: "Chart",
 
@@ -50,6 +53,8 @@ export default {
     return {
       datacollection: null,
 
+      select_bank: "",
+
       banks_index: [],
       partitioned_bank: [],
       options: {
@@ -57,9 +62,8 @@ export default {
           yAxes: [
             {
               ticks: {
-                // Include a dollar sign in the ticks
-                callback: function(value, values) {
-                  return "฿ " + values;
+                callback: function(value) {
+                  return "฿ " + value;
                 }
               }
             }
@@ -70,17 +74,9 @@ export default {
             tension: 0
           }
         }
-        // legend: {
-        //   display: false
-        // },
-        // tooltips: {
-        //   callbacks: {
-        //     label: function(tooltipItem) {
-        //       return tooltipItem.yLabel;
-        //     }
-        //   }
-        // }
-      }
+      },
+
+      datacollections: {}
     };
   },
 
@@ -89,42 +85,50 @@ export default {
   },
 
   created() {
-    this.bank_accounts.forEach(each => {
-      this.banks_index.push(each);
-    });
-  },
+    for (var i = 0, len = this.bank_accounts.length; i < len; i++) {
+      let each_bank = this.bank_accounts[i];
 
-  methods: {
-    selectChart(index) {
-      var selected_bank = this.files.bank.filter(o => {
-        return o.Bank_Entity === index;
+      this.banks_index.push(each_bank);
+
+      let selected_bank = this.files.bank.filter(o => {
+        return o.Bank_Entity === each_bank;
       });
 
-      var date_label = [];
-      var balance = [];
+      let date_label = [];
+      let balance = [];
 
       selected_bank.forEach(obj => {
         date_label.push(obj.Date);
         balance.push(obj.Balance);
       });
 
-      var dataset = {
-        label: index,
+      let dataset = {
+        label: each_bank,
         fill: false,
-        borderColor: "#0073b7",
+        borderColor: "#179513",
         data: balance
       };
 
-      this.datacollection = {
+      let collection = {
         labels: date_label,
         fill: false,
         datasets: [dataset]
       };
+
+      this.datacollections[each_bank] = collection;
     }
+
+    // Initiate chart of first render
+    this.$nextTick(() => {
+      this.selectChart(this.banks_index[0]);
+    });
   },
 
-  mounted() {
-    this.selectChart();
+  methods: {
+    selectChart(index) {
+      this.select_bank = index;
+      this.datacollection = this.datacollections[index];
+    }
   }
 };
 </script>
